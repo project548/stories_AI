@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>キックオフミーティング資料</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;background:#FAF7F4;color:#3D2B35;padding:0;font-size:13px;}
+
+/* ナビ */
+.nav{position:sticky;top:0;background:#FAF7F4;border-bottom:1px solid #E8D8DC;z-index:100;padding:10px 1.5rem;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.nav-title{font-size:12px;font-weight:700;color:#8C5568;margin-right:8px;white-space:nowrap;}
+.nav-btn{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;border:0.5px solid #E8D8DC;background:#fff;color:#6B4F5A;cursor:pointer;white-space:nowrap;}
+.nav-btn:hover{background:#F5E6EA;border-color:#C9879A;color:#8C5568;}
+.nav-btn.active{background:#C9879A;border-color:#C9879A;color:#fff;}
+
+/* セクション */
+.section{padding:2rem 1.5rem;border-bottom:3px solid #E8D8DC;}
+.section-tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:3px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;}
+.section-title{font-size:22px;font-weight:700;margin-bottom:6px;line-height:1.3;}
+.section-sub{font-size:13px;color:#9B8490;line-height:1.6;margin-bottom:1.5rem;}
+.sec-label{font-size:10px;font-weight:700;color:#9B8490;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.divider{height:1px;background:#E8D8DC;margin:1.5rem 0;}
+
+/* カード系 */
+.card{background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;padding:14px 16px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.item{display:flex;gap:7px;align-items:flex-start;margin-bottom:6px;font-size:12px;line-height:1.6;}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;}
+
+/* アジェンダ */
+.agenda-row{display:flex;align-items:stretch;gap:12px;margin-bottom:8px;}
+.agenda-time{font-size:13px;font-weight:700;color:#C9879A;white-space:nowrap;min-width:70px;padding-top:12px;}
+.agenda-bar{width:3px;background:#F5E6EA;border-radius:2px;flex-shrink:0;}
+.agenda-card{flex:1;background:#fff;border:0.5px solid #E8D8DC;border-radius:8px;padding:10px 14px;}
+.agenda-title{font-size:13px;font-weight:700;margin-bottom:3px;}
+.agenda-desc{font-size:11.5px;color:#6B4F5A;line-height:1.6;}
+
+/* ベネフィット */
+.benefit-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.benefit-card{background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;padding:14px;text-align:center;}
+.benefit-icon{width:44px;height:44px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.benefit-title{font-size:12px;font-weight:700;margin-bottom:5px;line-height:1.4;}
+.benefit-desc{font-size:11px;color:#6B4F5A;line-height:1.6;}
+
+/* タイムライン */
+.tl-row{display:flex;position:relative;gap:0;}
+.tl-track{position:absolute;top:22px;left:36px;right:36px;height:2px;background:#E8D8DC;}
+.tl-ph{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.tl-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid;background:#FAF7F4;z-index:1;}
+.tl-name{font-size:11px;font-weight:700;text-align:center;line-height:1.3;max-width:90px;}
+.tl-period{font-size:10px;color:#9B8490;text-align:center;white-space:nowrap;}
+.tl-ms{font-size:10px;text-align:center;line-height:1.4;max-width:90px;padding:3px 6px;border-radius:4px;}
+
+/* 役割カード */
+.role-card{border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;background:#fff;}
+.role-header{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid #E8D8DC;}
+.role-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.role-name{font-size:13px;font-weight:700;}
+.role-who{font-size:10px;color:#9B8490;}
+.role-body{padding:10px 14px;}
+.role-status{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;margin-bottom:8px;}
+.task-title{font-size:10px;font-weight:700;color:#9B8490;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+.todo-item{display:flex;gap:6px;align-items:flex-start;margin-bottom:5px;font-size:11px;line-height:1.5;}
+.todo-dot{width:14px;height:14px;border-radius:3px;border:1px solid #E8D8DC;flex-shrink:0;margin-top:1px;}
+.diff-bar{margin-top:8px;padding:6px 10px;border-radius:5px;font-size:11px;line-height:1.55;}
+
+/* 役割サマリーカード */
+.rs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;}
+.rs-card{border-radius:8px;padding:11px 12px;border:0.5px solid;}
+.rs-card.empty{border-style:dashed;}
+.rs-who{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.rs-title{font-size:12px;font-weight:700;margin-bottom:5px;line-height:1.3;}
+.rs-one{font-size:11px;line-height:1.6;margin-bottom:7px;}
+.rs-flow{display:flex;flex-direction:column;gap:3px;}
+.rs-step{font-size:10px;padding:3px 7px;border-radius:3px;display:flex;align-items:center;gap:5px;line-height:1.4;}
+.rs-step-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;}
+
+/* ガント */
+.gantt-wrap{overflow-x:auto;}
+.gantt{min-width:780px;}
+.g-head{display:grid;grid-template-columns:130px repeat(12,1fr);gap:0;margin-bottom:3px;}
+.g-head-lbl{font-size:9px;font-weight:700;color:#9B8490;text-align:center;padding:3px 0;}
+.g-phase-row{display:grid;grid-template-columns:130px repeat(12,1fr);gap:0;margin-bottom:4px;}
+.g-row{display:grid;grid-template-columns:130px repeat(12,1fr);gap:0;margin-bottom:3px;align-items:center;}
+.g-label{font-size:11px;font-weight:600;padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.g-cell{height:24px;position:relative;}
+.g-bar{position:absolute;top:3px;bottom:3px;border-radius:3px;display:flex;align-items:center;padding:0 5px;font-size:9px;font-weight:600;white-space:nowrap;overflow:hidden;}
+.g-sec{font-size:9px;font-weight:700;color:#9B8490;padding:4px 6px;grid-column:1/-1;background:#F5EEF0;border-radius:3px;margin:4px 0 2px;}
+
+/* 価格 */
+.plan-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.plan-card{border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;background:#fff;}
+.plan-card.feat{border:2px solid #C9879A;}
+.plan-top{font-size:10px;font-weight:700;padding:3px 0;text-align:center;}
+.plan-name{font-size:15px;font-weight:700;margin-bottom:4px;}
+.plan-price{font-size:24px;font-weight:700;}
+.pb-item{display:flex;gap:6px;align-items:flex-start;margin-bottom:5px;font-size:11px;line-height:1.5;}
+.ck{width:13px;height:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+
+/* 販売チャネル */
+.channel-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.wave-card{background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;padding:13px 15px;}
+.wave-num{font-size:22px;font-weight:700;color:#C9879A;line-height:1;margin-bottom:4px;}
+.wave-title{font-size:13px;font-weight:700;margin-bottom:6px;}
+.wave-desc{font-size:11.5px;color:#6B4F5A;line-height:1.65;}
+.wave-timing{font-size:10px;font-weight:700;margin-top:8px;padding:3px 8px;border-radius:3px;display:inline-block;}
+
+/* マインドセット */
+.mind-box{background:#fff;border-left:4px solid #C9879A;border-radius:0 10px 10px 0;padding:16px 18px;margin-bottom:10px;}
+.mind-title{font-size:14px;font-weight:700;color:#8C5568;margin-bottom:8px;}
+.mind-text{font-size:12.5px;line-height:1.9;color:#3D2B35;}
+
+/* 私へのメモ（最終ページ） */
+.memo-box{background:#FDF4F6;border:1px dashed #C9879A;border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+.memo-title{font-size:12px;font-weight:700;color:#8C5568;margin-bottom:8px;}
+.memo-item{font-size:12px;color:#6B4F5A;line-height:1.7;margin-bottom:4px;display:flex;gap:6px;}
+</style>
+</head>
+<body>
+
+<!-- ナビ -->
+<div class="nav">
+  <span class="nav-title">Stories Engine キックオフ</span>
+  <button class="nav-btn active" onclick="goTo('s0',this)">アジェンダ</button>
+  <button class="nav-btn" onclick="goTo('s1',this)">01 サービス概要</button>
+  <button class="nav-btn" onclick="goTo('s2',this)">02 価格・根拠</button>
+  <button class="nav-btn" onclick="goTo('s3',this)">03 役割分担</button>
+  <button class="nav-btn" onclick="goTo('s4',this)">04 スケジュール</button>
+  <button class="nav-btn" onclick="goTo('s5',this)">05 販売戦略</button>
+  <button class="nav-btn" onclick="goTo('s6',this)">06 マインドセット</button>
+  <button class="nav-btn" onclick="goTo('s7',this)" style="background:#F5E6EA;color:#8C5568;">★ 私へのメモ</button>
+</div>
+
+<!-- ===== アジェンダ ===== -->
+<div class="section" id="s0">
+  <div class="section-tag" style="background:#F5E6EA;color:#8C5568;">今日のキックオフ</div>
+  <div class="section-title">Stories Engine<br>キックオフミーティング</div>
+  <div class="section-sub">BXP 1期企画 ／ 本日がスタートです</div>
+
+  <div class="sec-label">アジェンダ（全40〜45分）</div>
+
+  <div class="agenda-row">
+    <div class="agenda-time">0:00〜<br>5分</div>
+    <div class="agenda-bar" style="background:#C9879A;"></div>
+    <div class="agenda-card">
+      <div class="agenda-title">① マインドセット共有</div>
+      <div class="agenda-desc">このプロジェクトで大切にしたいこと。正解のないことに向かう姿勢について。</div>
+    </div>
+  </div>
+
+  <div class="agenda-row">
+    <div class="agenda-time">5:00〜<br>5分</div>
+    <div class="agenda-bar" style="background:#C9879A;"></div>
+    <div class="agenda-card">
+      <div class="agenda-title">② サービス概要（誰のための何か・メリット）</div>
+      <div class="agenda-desc">Stories Engineとは何か。誰に届けるのか。使った人が得るもの。</div>
+    </div>
+  </div>
+
+  <div class="agenda-row">
+    <div class="agenda-time">10:00〜<br>3分</div>
+    <div class="agenda-bar" style="background:#7AAFC0;"></div>
+    <div class="agenda-card">
+      <div class="agenda-title">③ UI操作デモ</div>
+      <div class="agenda-desc">実際の操作感・使うイメージを共有。</div>
+    </div>
+  </div>
+
+  <div class="agenda-row">
+    <div class="agenda-time">13:00〜<br>5分</div>
+    <div class="agenda-bar" style="background:#8FA88A;"></div>
+    <div class="agenda-card">
+      <div class="agenda-title">④ 価格・根拠・相場感</div>
+      <div class="agenda-desc">いくらで売るか。なぜその価格か。成果保証なしでも売れる理由。</div>
+    </div>
+  </div>
+
+  <div class="agenda-row">
+    <div class="agenda-time">18:00〜<br>12分</div>
+    <div class="agenda-bar" style="background:#A86678;"></div>
+    <div class="agenda-card">
+      <div class="agenda-title">⑤ 役割分担・ToDo・スケジュール</div>
+      <div class="agenda-desc">誰が何をやるか。各役割のToDo。7月頭リリースに向けたタイムライン。</div>
+    </div>
+  </div>
+
+  <div class="agenda-row">
+    <div class="agenda-time">30:00〜<br>5分</div>
+    <div class="agenda-bar" style="background:#8FA88A;"></div>
+    <div class="agenda-card">
+      <div class="agenda-title">⑥ 販売戦略・集客の考え方</div>
+      <div class="agenda-desc">今いるメンバーでどう広げるか。現実的な波及の流れ。</div>
+    </div>
+  </div>
+
+  <div class="agenda-row">
+    <div class="agenda-time">35:00〜<br>10分</div>
+    <div class="agenda-bar" style="background:#C9879A;"></div>
+    <div class="agenda-card">
+      <div class="agenda-title">⑦ 質疑応答・役割決め</div>
+      <div class="agenda-desc">やりたい役割に手を挙げてもらう。今日中に大まかな配置を決める。</div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;padding:10px 14px;background:#F5E6EA;border-radius:8px;font-size:12px;color:#8C5568;line-height:1.7;">
+    <strong>今日の目標：</strong>このプロジェクトの全体像を共有し、参加意思を確認、大まかな役割配置を決める。<br>
+    <strong>上位への共有：</strong>この資料はその後圭佑さん・省吾さんへのレポートにも使用します。変更が入る可能性はありますが、まず動き始めることが重要です。
+  </div>
+</div>
+
+<!-- ===== マインドセット ===== -->
+<div class="section" id="s6" style="background:#FDF4F6;">
+  <div class="section-tag" style="background:#F5E6EA;color:#8C5568;">最初に</div>
+  <div class="section-title">このプロジェクトで<br>大切にしたいこと</div>
+  <div class="section-sub">役割に入る前に、まず共有させてください。</div>
+
+  <div class="mind-box">
+    <div class="mind-title">正解のないことに、一緒に向かいます</div>
+    <div class="mind-text">
+      このプロジェクトは、BXP 1期として初めて立ち上げる企画です。<br>
+      ニーズは間違いなくある。でも、思い通りにいかないことも必ずある。<br><br>
+      だからこそ、うまくいかない場面で誰かを責めるのではなく、<br>
+      「じゃあどうすればいいか」を一緒に考えていきたい。<br>
+      それだけをお願いしたいと思っています。
+    </div>
+  </div>
+
+  <div class="mind-box">
+    <div class="mind-title">「言われたことをやれば成果が出る」という場ではありません</div>
+    <div class="mind-text">
+      マニュアル通りにやれば成果が保証される、ということはないし、<br>
+      そういうプロジェクトでもありません。<br><br>
+      自分の頭で考えて、試して、フィードバックを返してくれる人たちと<br>
+      一緒に動きたいと思っています。<br>
+      みなさんのリソースを無駄にしたくないから、こそ、正直に言います。
+    </div>
+  </div>
+
+  <div class="mind-box">
+    <div class="mind-title">それでも、見込みはある</div>
+    <div class="mind-text">
+      無鉄砲にやろうとしているわけではありません。<br>
+      ニーズは確実にある。構造はちゃんと設計している。<br>
+      実績を積みながら、確認しながら進める。それが今回のやり方です。<br><br>
+      不安に思うことがあれば、いつでも言ってください。<br>
+      一緒に考えます。
+    </div>
+  </div>
+</div>
+
+<!-- ===== サービス概要 ===== -->
+<div class="section" id="s1">
+  <div class="section-tag" style="background:#F5E6EA;color:#8C5568;">01 サービス概要</div>
+  <div class="section-title">Stories Engine とは</div>
+  <div class="section-sub">誰のための・何のサービスか</div>
+
+  <div class="sec-label">誰のためのサービスか</div>
+  <div class="grid2" style="margin-bottom:14px;">
+    <div class="card" style="border-left:4px solid #C9879A;border-radius:0 10px 10px 0;">
+      <div style="font-size:11px;font-weight:700;color:#C9879A;margin-bottom:5px;">コアターゲット</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px;">自社商品の売上・集客を<br>上げたいママ発信者</div>
+      <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">ストーリーズで商品を売りたいが「何を投稿すればいいか」「続かない」「成果が見えない」という悩みを持つ人</div>
+    </div>
+    <div class="card" style="border-left:4px solid #7AAFC0;border-radius:0 10px 10px 0;">
+      <div style="font-size:11px;font-weight:700;color:#4D7D8F;margin-bottom:5px;">セカンダリターゲット</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px;">登壇・note流入・ファン化など<br>近い目的の発信者</div>
+      <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">マネタイズ直結ではないが、認知・接点づくりにストーリーズを活用したい人。ジャンル問わず。</div>
+    </div>
+  </div>
+
+  <div class="sec-label">3つの共通の悩み → Stories Engine で変わること</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+    <div>
+      <div class="card" style="background:#FDF4F6;margin-bottom:4px;">
+        <div style="font-size:12px;font-weight:700;color:#A86678;margin-bottom:3px;">悩み</div>
+        <div style="font-size:11.5px;color:#6B4F5A;line-height:1.6;">毎日「何を上げよう」で時間が溶ける。育児の合間に考える余裕がない。</div>
+      </div>
+      <div style="text-align:center;font-size:14px;color:#C9879A;margin:3px 0;">↓</div>
+      <div class="card" style="background:#F5E6EA;">
+        <div style="font-size:11.5px;color:#8C5568;font-weight:700;line-height:1.6;">今日の投稿が全部出来上がっている状態になる</div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="background:#FDF4F6;margin-bottom:4px;">
+        <div style="font-size:12px;font-weight:700;color:#A86678;margin-bottom:3px;">悩み</div>
+        <div style="font-size:11.5px;color:#6B4F5A;line-height:1.6;">投稿してもDMも問い合わせも来ない。何が間違っているかわからない。</div>
+      </div>
+      <div style="text-align:center;font-size:14px;color:#C9879A;margin:3px 0;">↓</div>
+      <div class="card" style="background:#F5E6EA;">
+        <div style="font-size:11.5px;color:#8C5568;font-weight:700;line-height:1.6;">見込み客の反応を見て調整するだけになる</div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="background:#FDF4F6;margin-bottom:4px;">
+        <div style="font-size:12px;font-weight:700;color:#A86678;margin-bottom:3px;">悩み</div>
+        <div style="font-size:11.5px;color:#6B4F5A;line-height:1.6;">「売り込みっぽい」と思われるのが怖くて踏み出せない。</div>
+      </div>
+      <div style="text-align:center;font-size:14px;color:#C9879A;margin:3px 0;">↓</div>
+      <div class="card" style="background:#F5E6EA;">
+        <div style="font-size:11.5px;color:#8C5568;font-weight:700;line-height:1.6;">流れが設計されているから売り込まずに自然に売れる</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">このサービスが提供するもの</div>
+  <div class="card" style="border:2px solid #C9879A;background:#FDF4F6;margin-bottom:14px;text-align:center;padding:20px;">
+    <div style="font-size:11px;font-weight:700;color:#C9879A;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Stories Engine の本質的な価値</div>
+    <div style="font-size:18px;font-weight:700;color:#3D2B35;line-height:1.4;margin-bottom:10px;">点ではなく「面」で売る。<br>流れがあるから、ファンになり、買いたくなる。</div>
+    <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="background:#C9879A;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;">認知</span>
+      <span style="font-size:14px;color:#C9879A;">›</span>
+      <span style="background:#C9879A;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;">共感</span>
+      <span style="font-size:14px;color:#C9879A;">›</span>
+      <span style="background:#C9879A;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;">興味</span>
+      <span style="font-size:14px;color:#C9879A;">›</span>
+      <span style="background:#C9879A;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;">意欲醸成</span>
+      <span style="font-size:14px;color:#C9879A;">›</span>
+      <span style="background:#C9879A;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;">購入</span>
+    </div>
+    <div style="font-size:12px;color:#8C5568;line-height:1.7;">この流れが設計済みの30日分のストーリーズ素材を、あなたの商材・ペルソナに合わせて生成する。<br>成果保証はない。ただし「流れなく投稿する」より反応が出やすい構造を提供する。</div>
+  </div>
+
+  <div class="sec-label">使い方（4ステップ）</div>
+  <div style="display:flex;gap:0;align-items:stretch;">
+    <div style="flex:1;background:#fff;border:0.5px solid #E8D8DC;padding:12px 10px;border-radius:8px 0 0 8px;text-align:center;">
+      <div style="font-size:10px;color:#9B8490;margin-bottom:3px;">Step 1</div>
+      <div style="font-size:12px;font-weight:700;">商材・ペルソナを入力</div>
+      <div style="font-size:10px;color:#9B8490;margin-top:3px;">何を売るか、誰に向けてか</div>
+    </div>
+    <div style="display:flex;align-items:center;font-size:16px;color:#C9879A;border-top:0.5px solid #E8D8DC;border-bottom:0.5px solid #E8D8DC;padding:0 4px;background:#fff;">›</div>
+    <div style="flex:1.3;background:#F5E6EA;border:0.5px solid #C9879A;padding:12px 10px;text-align:center;">
+      <div style="font-size:10px;color:#C9879A;margin-bottom:3px;font-weight:700;">Step 2</div>
+      <div style="font-size:12px;font-weight:700;color:#8C5568;">ターゲットの悩み・購入背景・潜在ニーズを入力</div>
+      <div style="font-size:10px;color:#9B8490;margin-top:3px;">ターゲットに関するあらゆることを答える</div>
+    </div>
+    <div style="display:flex;align-items:center;font-size:16px;color:#C9879A;border-top:0.5px solid #C9879A;border-bottom:0.5px solid #C9879A;padding:0 4px;background:#F5E6EA;">›</div>
+    <div style="flex:1;background:#fff;border:0.5px solid #E8D8DC;padding:12px 10px;text-align:center;">
+      <div style="font-size:10px;color:#9B8490;margin-bottom:3px;">生成</div>
+      <div style="font-size:12px;font-weight:700;">30日分のパッケージが出る</div>
+      <div style="font-size:10px;color:#9B8490;margin-top:3px;">文言＋画像テンプレがセット</div>
+    </div>
+    <div style="display:flex;align-items:center;font-size:16px;color:#C9879A;border-top:0.5px solid #E8D8DC;border-bottom:0.5px solid #E8D8DC;padding:0 4px;background:#fff;">›</div>
+    <div style="flex:1;background:#fff;border:0.5px solid #E8D8DC;padding:12px 10px;border-radius:0 8px 8px 0;text-align:center;">
+      <div style="font-size:10px;color:#9B8490;margin-bottom:3px;">あとは</div>
+      <div style="font-size:12px;font-weight:700;">投稿するだけ</div>
+      <div style="font-size:10px;color:#9B8490;margin-top:3px;">反応を見て調整するだけ</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 価格 ===== -->
+<div class="section" id="s2">
+  <div class="section-tag" style="background:#DFF0F5;color:#4D7D8F;">02 価格・根拠</div>
+  <div class="section-title">価格設計と根拠</div>
+  <div class="section-sub">成果保証なし・価格でリスク設計。「今が一番安い」構造を最初から作る。</div>
+
+  <!-- 価格フェーズ全体像 -->
+  <div class="sec-label">価格フェーズの全体像</div>
+  <div style="background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;margin-bottom:14px;">
+    <!-- ヘッダー行 -->
+    <div style="display:grid;grid-template-columns:90px repeat(5,1fr);background:#F5EEF0;">
+      <div style="padding:8px 10px;font-size:10px;font-weight:700;color:#9B8490;"></div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="font-size:10px;font-weight:700;color:#3D2B35;line-height:1.4;">5月〜<br>6月末</div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;background:#FDF4F6;">
+        <div style="font-size:10px;font-weight:700;color:#C9879A;line-height:1.4;">7月〜<br>8月</div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="font-size:10px;font-weight:700;color:#3D2B35;line-height:1.4;">9月〜<br>（値上げ）</div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="font-size:10px;font-weight:700;color:#3D2B35;line-height:1.4;">2026年<br>9月〜</div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="font-size:10px;font-weight:700;color:#9B8490;line-height:1.4;">2026年<br>以降</div>
+      </div>
+    </div>
+    <!-- スターター行 -->
+    <div style="display:grid;grid-template-columns:90px repeat(5,1fr);border-top:0.5px solid #E8D8DC;align-items:center;">
+      <div style="padding:10px;font-size:12px;font-weight:700;color:#3D2B35;">スターター</div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#A86678;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥9,800</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.8);">買い切り</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;background:#FDF4F6;">
+        <div style="background:#F5EEF0;border-radius:6px;padding:6px 4px;border:0.5px solid #E8D8DC;">
+          <div style="font-size:11px;font-weight:700;color:#9B8490;">終了</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;border-left:0.5px solid #E8D8DC;"></div>
+      <div style="padding:8px 6px;border-left:0.5px solid #E8D8DC;"></div>
+      <div style="padding:8px 6px;border-left:0.5px solid #E8D8DC;"></div>
+    </div>
+    <!-- 通常プラン行 -->
+    <div style="display:grid;grid-template-columns:90px repeat(5,1fr);border-top:0.5px solid #E8D8DC;align-items:center;">
+      <div style="padding:10px;font-size:12px;font-weight:700;color:#C9879A;">通常プラン</div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#F5EEF0;border-radius:6px;padding:6px 4px;border:0.5px dashed #C9879A;">
+          <div style="font-size:10px;color:#9B8490;">準備中</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;background:#FDF4F6;">
+        <div style="background:#C9879A;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥3,980/月</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.85);">🔥 限定価格</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#8C5568;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥9,980/月</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.8);">値上げ</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#8C5568;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥9,980/月</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.8);">継続</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#8C5568;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥9,980/月</div>
+        </div>
+      </div>
+    </div>
+    <!-- PDCAプラン行 -->
+    <div style="display:grid;grid-template-columns:90px repeat(5,1fr);border-top:0.5px solid #E8D8DC;align-items:center;">
+      <div style="padding:10px;font-size:12px;font-weight:700;color:#4D7D8F;">PDCAプラン</div>
+      <div style="padding:8px 6px;border-left:0.5px solid #E8D8DC;"></div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;background:#FDF4F6;">
+        <div style="background:#7AAFC0;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥6,980/月</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.85);">🔥 限定価格</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#2B5F75;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥19,800/月</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.8);">値上げ</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#2B5F75;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥19,800/月</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.8);">継続</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#2B5F75;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥19,800/月</div>
+        </div>
+      </div>
+    </div>
+    <!-- フルオート行 -->
+    <div style="display:grid;grid-template-columns:90px repeat(5,1fr);border-top:0.5px solid #E8D8DC;align-items:center;">
+      <div style="padding:10px;font-size:12px;font-weight:700;color:#8FA88A;">フルオート</div>
+      <div style="padding:8px 6px;border-left:0.5px solid #E8D8DC;"></div>
+      <div style="padding:8px 6px;border-left:0.5px solid #E8D8DC;background:#FDF4F6;"></div>
+      <div style="padding:8px 6px;border-left:0.5px solid #E8D8DC;"></div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#8FA88A;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥29,800/月</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.85);">リリース</div>
+        </div>
+      </div>
+      <div style="padding:8px 6px;text-align:center;border-left:0.5px solid #E8D8DC;">
+        <div style="background:#5E8060;border-radius:6px;padding:6px 4px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;">¥29,800/月</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- プラン詳細 -->
+  <div class="sec-label">プラン詳細</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;">
+
+    <!-- 通常プラン -->
+    <div style="border:2px solid #C9879A;border-radius:10px;overflow:hidden;background:#fff;">
+      <div style="background:#C9879A;padding:7px 12px;">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:2px;">通常プラン ／ 7月リリース</div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">AIジェネレーター</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.8);">入力するだけ・何度でも生成</div>
+      </div>
+      <div style="padding:12px 14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div style="background:#FDF4F6;border-radius:7px;padding:8px 10px;">
+            <div style="font-size:9px;font-weight:700;color:#8C5568;margin-bottom:3px;">7〜8月 限定価格</div>
+            <div style="font-size:22px;font-weight:700;color:#C9879A;line-height:1;">¥3,980</div>
+            <div style="font-size:9px;color:#9B8490;">/月・サブスク・解約自由</div>
+          </div>
+          <div style="background:#F5EEF0;border-radius:7px;padding:8px 10px;">
+            <div style="font-size:9px;font-weight:700;color:#9B8490;margin-bottom:3px;">9月〜 通常価格</div>
+            <div style="font-size:22px;font-weight:700;color:#8C5568;line-height:1;">¥9,980</div>
+            <div style="font-size:9px;color:#9B8490;">/月</div>
+          </div>
+        </div>
+        <div style="display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;background:#F5E6EA;color:#8C5568;border-radius:3px;margin-bottom:8px;">月額サブスク</div>
+        <div style="font-size:10px;font-weight:700;color:#9B8490;margin-bottom:5px;">含まれること</div>
+        <div style="font-size:11px;color:#6B4F5A;line-height:1.7;">
+          <div style="display:flex;gap:5px;margin-bottom:3px;"><span style="color:#C9879A;font-weight:700;">✓</span><span>フォーム入力→30日分を自動生成（何回でも）</span></div>
+          <div style="display:flex;gap:5px;"><span style="color:#C9879A;font-weight:700;">✓</span><span>デザインテンプレ自動提案（複数から選択）</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDCAプラン -->
+    <div style="border:2px solid #7AAFC0;border-radius:10px;overflow:hidden;background:#fff;">
+      <div style="background:#7AAFC0;padding:7px 12px;">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:2px;">PDCAプラン ／ 7月〜 上位プラン</div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">PDCA・AI検証プラン</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.8);">生成→投稿→数値分析→改善提案まで一気通貫</div>
+      </div>
+      <div style="padding:12px 14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div style="background:#DFF0F5;border-radius:7px;padding:8px 10px;">
+            <div style="font-size:9px;font-weight:700;color:#4D7D8F;margin-bottom:3px;">7〜8月 限定価格</div>
+            <div style="font-size:22px;font-weight:700;color:#4D7D8F;line-height:1;">¥6,980</div>
+            <div style="font-size:9px;color:#9B8490;">/月・サブスク・解約自由</div>
+          </div>
+          <div style="background:#F5EEF0;border-radius:7px;padding:8px 10px;">
+            <div style="font-size:9px;font-weight:700;color:#9B8490;margin-bottom:3px;">9月〜 通常価格</div>
+            <div style="font-size:22px;font-weight:700;color:#2B5F75;line-height:1;">¥19,800</div>
+            <div style="font-size:9px;color:#9B8490;">/月</div>
+          </div>
+        </div>
+        <div style="display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;background:#DFF0F5;color:#4D7D8F;border-radius:3px;margin-bottom:8px;">月額サブスク</div>
+        <div style="font-size:10px;font-weight:700;color:#9B8490;margin-bottom:5px;">通常プランの全機能＋</div>
+        <div style="font-size:11px;color:#6B4F5A;line-height:1.7;">
+          <div style="display:flex;gap:5px;margin-bottom:3px;"><span style="color:#7AAFC0;font-weight:700;">✓</span><span>閲覧率・DM数などの数値分析レポート（月1回）</span></div>
+          <div style="display:flex;gap:5px;"><span style="color:#7AAFC0;font-weight:700;">✓</span><span>「次の30日分」の改善提案をAIが自動生成</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- フルオート -->
+    <div style="border:0.5px solid #8FA88A;border-radius:10px;overflow:hidden;background:#fff;">
+      <div style="background:#8FA88A;padding:7px 12px;">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:2px;">フルオート ／ 2026年9月〜</div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">フルオートシステム</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.8);">管理・トラッキングまで一気通貫。最上位プラン。</div>
+      </div>
+      <div style="padding:12px 14px;">
+        <div style="background:#E4EDE3;border-radius:7px;padding:8px 10px;margin-bottom:10px;">
+          <div style="font-size:22px;font-weight:700;color:#5E8060;line-height:1;">¥29,800</div>
+          <div style="font-size:9px;color:#9B8490;">/月・サブスク</div>
+          <div style="font-size:9px;color:#6B4F5A;margin-top:3px;">7〜8月登録者は移行時に優待価格</div>
+        </div>
+        <div style="display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;background:#E4EDE3;color:#4A6847;border-radius:3px;margin-bottom:8px;">月額サブスク</div>
+        <div style="font-size:10px;font-weight:700;color:#9B8490;margin-bottom:5px;">PDCAプランの全機能＋</div>
+        <div style="font-size:11px;color:#6B4F5A;line-height:1.7;">
+          <div style="display:flex;gap:5px;margin-bottom:3px;"><span style="color:#8FA88A;font-weight:700;">✓</span><span>投稿スケジュール管理・リマインド機能</span></div>
+          <div style="display:flex;gap:5px;margin-bottom:3px;"><span style="color:#8FA88A;font-weight:700;">✓</span><span>成果トラッキングダッシュボード</span></div>
+          <div style="display:flex;gap:5px;"><span style="color:#8FA88A;font-weight:700;">✓</span><span>デザインテンプレが大幅増加・完全自由</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 価格根拠 -->
+  <div class="sec-label">成果保証なしでも売れる理由</div>
+  <div class="grid3" style="margin-bottom:10px;">
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;color:#C9879A;margin-bottom:5px;">① 価格でリスクを下げる</div>
+      <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">「失敗しても痛くない」金額帯にすることで試す障壁を下げる。SNS講座も成果保証はないが売れている。同じ市場原理。</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;color:#C9879A;margin-bottom:5px;">② 解約自由で安心感を出す</div>
+      <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">「いつでもやめられる」がサブスクの最大の安心材料。縛り期間なし。成果が出なければ解約すればいい。</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;color:#C9879A;margin-bottom:5px;">③ 実績で補完する</div>
+      <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">成果保証はしないが「使った人の声」と数値実績でリスク認知を下げる。モニターの成果がここになる。</div>
+    </div>
+  </div>
+
+  <div style="background:#F5EEF0;border-radius:8px;padding:10px 14px;font-size:11.5px;color:#6B4F5A;line-height:1.7;">
+    <strong style="color:#8C5568;">不具合・要望の受け付けについて：</strong>チャット or メールフォームで文章受付、48時間以内に返信。オペレーター接続なし。v3以降はFAQボット導入予定。成果へのコミット・カスタムサポートは提供しません。
+  </div>
+</div>
+
+<!-- ===== 役割分担 ===== -->
+<div class="section" id="s3">
+  <div class="section-tag" style="background:#E4EDE3;color:#4A6847;">03 役割分担</div>
+  <div class="section-title">チーム役割分担と ToDo</div>
+  <div class="section-sub">各自の担当・具体的なToDo・難易度と根拠</div>
+
+  <!-- 役割サマリー（一言カード） -->
+  <div class="sec-label" style="margin-bottom:10px;">各担当：一言でいうと何をする人か</div>
+  <div class="rs-grid">
+    <div class="rs-card" style="background:#FDF4F6;border-color:#E8B4BC;">
+      <div class="rs-who" style="color:#C9879A;">PDM ／ そのママさん</div>
+      <div class="rs-title">全体を設計・判断する人</div>
+      <div class="rs-one">何を作るか・どう進めるかを決め、各チームに指示を出す。GO/HOLDを判断する。</div>
+      <div class="rs-flow">
+        <div class="rs-step" style="background:#F5E6EA;color:#8C5568;"><div class="rs-step-dot" style="background:#C9879A;"></div>30日テンプレ・構成メインを書く</div>
+        <div class="rs-step" style="background:#F5E6EA;color:#8C5568;"><div class="rs-step-dot" style="background:#C9879A;"></div>各担当への作業指示を出す</div>
+        <div class="rs-step" style="background:#F5E6EA;color:#8C5568;"><div class="rs-step-dot" style="background:#C9879A;"></div>結果を見てジャッジ</div>
+      </div>
+    </div>
+    <div class="rs-card" style="background:#F4F8F3;border-color:#B8D4B5;">
+      <div class="rs-who" style="color:#4A6847;">構成チーム ／ そのママ・ようこ・かおり・なな</div>
+      <div class="rs-title">「売れる言葉の流れ」を作る人たち</div>
+      <div class="rs-one">売れているストーリーズを研究し、30日分の訴求パターンと文言を言語化。AI開発チームへ渡す素材を作る。</div>
+      <div class="rs-flow">
+        <div class="rs-step" style="background:#E4EDE3;color:#4A6847;"><div class="rs-step-dot" style="background:#8FA88A;"></div>サンプル分析・訴求カテゴリの言語化</div>
+        <div class="rs-step" style="background:#E4EDE3;color:#4A6847;"><div class="rs-step-dot" style="background:#8FA88A;"></div>30日分の文言・パターン作成</div>
+        <div class="rs-step" style="background:#E4EDE3;color:#4A6847;"><div class="rs-step-dot" style="background:#8FA88A;"></div>開発渡し用ドキュメントに整える</div>
+      </div>
+    </div>
+    <div class="rs-card" style="background:#EEF7F9;border-color:#9FD4E0;">
+      <div class="rs-who" style="color:#4D7D8F;">DIR ／ さおりんさん</div>
+      <div class="rs-title">進行を管理する人</div>
+      <div class="rs-one">誰が何をいつまでにやるかを追いかけ、遅れを早めに察知して調整する。PDMの負担を分担。</div>
+      <div class="rs-flow">
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>タスク管理・締め切り管理</div>
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>週次定例の進行</div>
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>詰まってる人を早めに察知</div>
+      </div>
+    </div>
+    <div class="rs-card" style="background:#F4F8F3;border-color:#B8D4B5;">
+      <div class="rs-who" style="color:#4A6847;">サンプル収集 ／ ずぼこ・なな（アフィ）・かおり（自社）</div>
+      <div class="rs-title">「売れている実例」を集める人</div>
+      <div class="rs-one">アフィ・自社それぞれで売れているストーリーズをスクショ収集。構成チームの材料を作る。</div>
+      <div class="rs-flow">
+        <div class="rs-step" style="background:#E4EDE3;color:#4A6847;"><div class="rs-step-dot" style="background:#8FA88A;"></div>売れている発信者のストーリーズ収集</div>
+        <div class="rs-step" style="background:#E4EDE3;color:#4A6847;"><div class="rs-step-dot" style="background:#8FA88A;"></div>アフィ系・自社系それぞれ担当</div>
+        <div class="rs-step" style="background:#E4EDE3;color:#4A6847;"><div class="rs-step-dot" style="background:#8FA88A;"></div>フォルダ整理して構成チームへ共有</div>
+      </div>
+    </div>
+  </div>
+  <div class="rs-grid" style="margin-bottom:18px;">
+    <div class="rs-card" style="background:#EEF7F9;border-color:#9FD4E0;">
+      <div class="rs-who" style="color:#4D7D8F;">AI開発（設計）／ マサさん</div>
+      <div class="rs-title">自動化を設計する人</div>
+      <div class="rs-one">構成チームが言語化した素材をGPTプロンプトに落とし込む。要件定義・仕様設計が中心。</div>
+      <div class="rs-flow">
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>ログ収集フォームを設計・作成</div>
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>GPTプロンプトを設計・要件定義</div>
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>実装担当への要件書を作成</div>
+      </div>
+    </div>
+    <div class="rs-card" style="background:#EEF7F9;border-color:#9FD4E0;">
+      <div class="rs-who" style="color:#4D7D8F;">AI開発（実装）／ マサさん</div>
+      <div class="rs-title">実際にシステムを作る人</div>
+      <div class="rs-one">GPT APIへの接続・フォームUI・画像AI連携など実装全般を担う。v2以降のスケールを支える。</div>
+      <div class="rs-flow">
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>画像生成AIのクオリティ上限を調査</div>
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>GPTプロンプト実装・テスト</div>
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>フォームUI実装・リリース対応</div>
+      </div>
+    </div>
+    <div class="rs-card" style="background:#FDF4F6;border-color:#E8B4BC;">
+      <div class="rs-who" style="color:#C9879A;">画像担当 ／ ゆっぴさん・ちぅさん・ずぼこさん</div>
+      <div class="rs-title">見た目を作る人（サービスの肝）</div>
+      <div class="rs-one">Canvaで画像テンプレを作る。バリエーションがないとサービスが回らない最重要ポジションの一つ。</div>
+      <div class="rs-flow">
+        <div class="rs-step" style="background:#F5E6EA;color:#8C5568;"><div class="rs-step-dot" style="background:#C9879A;"></div>レイアウト・配色パターンを分類</div>
+        <div class="rs-step" style="background:#F5E6EA;color:#8C5568;"><div class="rs-step-dot" style="background:#C9879A;"></div>Canvaテンプレ作成・量産</div>
+        <div class="rs-step" style="background:#F5E6EA;color:#8C5568;"><div class="rs-step-dot" style="background:#C9879A;"></div>AI画像との組み合わせ調整</div>
+      </div>
+    </div>
+    <div class="rs-card" style="background:#EEF7F9;border-color:#9FD4E0;">
+      <div class="rs-who" style="color:#4D7D8F;">分析担当 ／ かつこさん</div>
+      <div class="rs-title">数字を読んで改善提案する人</div>
+      <div class="rs-one">モニターが記録した閲覧数・DM数・タップ数を集計し、次の改善につなげるレポートを作る。</div>
+      <div class="rs-flow">
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>毎日のログをスプレッドシートで集計</div>
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>反応が出たストーリーズの共通点を探す</div>
+        <div class="rs-step" style="background:#DFF0F5;color:#4D7D8F;"><div class="rs-step-dot" style="background:#7AAFC0;"></div>「次はここを変えよう」を提案</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 実績作り（モニター）セクション -->
+  <div class="sec-label">実績作り（モニター）の詳細</div>
+  <div style="background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;margin-bottom:10px;">
+    <div style="background:#F5E6EA;padding:10px 14px;border-bottom:0.5px solid #E8D8DC;">
+      <div style="font-size:13px;font-weight:700;color:#8C5568;margin-bottom:4px;">実績作り担当 ／ ななさん・ずぼこさん・ようこさん・そのママさん</div>
+      <div style="font-size:11px;color:#9B8490;">v0フェーズから稼働 ／ 分配6%（1名2%・30日完走条件）</div>
+    </div>
+    <div style="padding:12px 14px;">
+      <!-- 全体指標 -->
+      <div style="background:#FDF4F6;border-radius:6px;padding:10px 12px;margin-bottom:10px;">
+        <div style="font-size:10px;font-weight:700;color:#C9879A;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">★ 最重要指標（全員共通）</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="background:#C9879A;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;">0→1マネタイズ達成（目標1件）</span>
+          <span style="background:#F5E6EA;color:#8C5568;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;">毎日投稿できた</span>
+          <span style="background:#F5E6EA;color:#8C5568;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;">閲覧率が上がった</span>
+        </div>
+      </div>
+      <!-- 2カラム -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <!-- アフィ側 -->
+        <div style="border:0.5px solid #E8D8DC;border-radius:8px;overflow:hidden;">
+          <div style="background:#E4EDE3;padding:8px 12px;border-bottom:0.5px solid #E8D8DC;">
+            <div style="font-size:11px;font-weight:700;color:#4A6847;">アフィリエイト担当</div>
+            <div style="font-size:10px;color:#6B4F5A;margin-top:2px;">ななさん・ずぼこさん・ようこさん</div>
+          </div>
+          <div style="padding:10px 12px;">
+            <div style="font-size:10px;font-weight:700;color:#4A6847;margin-bottom:6px;">★ 向上指標</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">
+              <span style="background:#E4EDE3;color:#4A6847;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">クリック率アップ</span>
+            </div>
+            <div style="font-size:10px;font-weight:700;color:#9B8490;margin-bottom:5px;">副次的効果</div>
+            <div style="font-size:11px;color:#6B4F5A;line-height:1.6;">薄い教育を継続的にかけることができる。アフィ商材1件売れるごとに費用対効果が可視化される（1件¥3,000〜でペイ計算できる）。</div>
+          </div>
+        </div>
+        <!-- 自社側 -->
+        <div style="border:0.5px solid #E8D8DC;border-radius:8px;overflow:hidden;">
+          <div style="background:#F5E6EA;padding:8px 12px;border-bottom:0.5px solid #E8D8DC;">
+            <div style="font-size:11px;font-weight:700;color:#8C5568;">自社商品担当</div>
+            <div style="font-size:10px;color:#6B4F5A;margin-top:2px;">そのママさん</div>
+          </div>
+          <div style="padding:10px 12px;">
+            <div style="font-size:10px;font-weight:700;color:#C9879A;margin-bottom:6px;">★ 向上指標</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">
+              <span style="background:#F5E6EA;color:#8C5568;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">ストーリーズ閲覧率アップ</span>
+            </div>
+            <div style="font-size:10px;font-weight:700;color:#9B8490;margin-bottom:5px;">副次的効果</div>
+            <div style="font-size:11px;color:#6B4F5A;line-height:1.6;">成約（ただし何が効いているかは特定しにくい）。ロンチ時のストーリーズ効率化・制作コスト削減も副次効果として訴求可能。</div>
+          </div>
+        </div>
+      </div>
+      <!-- 注意 -->
+      <div style="margin-top:8px;padding:7px 10px;background:#FFF0D6;border-radius:6px;font-size:11px;color:#854F0B;line-height:1.6;">
+        <strong>ログ記録ルール：</strong>毎日のインサイト（閲覧数・タップ数・DM数）をGoogleフォームで記録。30日完走が分配の条件。記録が途切れると分析ができず、全体の実績作りに影響します。
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 収益配分表 -->
+  <div class="sec-label">収益配分表（確定版 ／ 合計100%）</div>
+  <div style="overflow-x:auto;border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;margin-bottom:10px;">
+  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <tr style="background:#F5EEF0;">
+      <th style="text-align:left;padding:7px 10px;font-size:10px;font-weight:700;color:#9B8490;border-bottom:0.5px solid #E8D8DC;">役割</th>
+      <th style="text-align:left;padding:7px 10px;font-size:10px;font-weight:700;color:#9B8490;border-bottom:0.5px solid #E8D8DC;">担当者</th>
+      <th style="padding:7px 10px;font-size:10px;font-weight:700;color:#9B8490;border-bottom:0.5px solid #E8D8DC;text-align:center;">割合</th>
+      <th style="text-align:left;padding:7px 10px;font-size:10px;font-weight:700;color:#9B8490;border-bottom:0.5px solid #E8D8DC;">寄与度の考え方</th>
+    </tr>
+    <tr>
+      <td style="padding:8px 10px;font-weight:700;color:#8C5568;border-bottom:0.5px solid #E8D8DC;">PDM</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">そのママさん</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#C9879A;text-align:center;border-bottom:0.5px solid #E8D8DC;">20%</td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">全体設計・判断・リスク負担。プロダクトの価値を作る中核。</td>
+    </tr>
+    <tr style="background:#FAFFF8;">
+      <td style="padding:8px 10px;font-weight:700;color:#4A6847;border-bottom:0.5px solid #E8D8DC;">構成チーム</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">そのママ・ようこ・かおり・ななさん（4名）</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#4A6847;text-align:center;border-bottom:0.5px solid #E8D8DC;">20%</td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">訴求パターンの言語化・文言作成。プロダクト品質を直接決める最重要ポジション。4名で分配。</td>
+    </tr>
+    <tr>
+      <td style="padding:8px 10px;font-weight:700;color:#9B8490;border-bottom:0.5px solid #E8D8DC;">DIR（ディレ）</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">さおりんさん</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#9B8490;text-align:center;border-bottom:0.5px solid #E8D8DC;">5%</td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">進行管理・タスク追跡・週次定例進行。PDMが設計に集中できる環境をつくる。</td>
+    </tr>
+    <tr style="background:#EEF7F9;">
+      <td style="padding:8px 10px;font-weight:700;color:#4D7D8F;border-bottom:0.5px solid #E8D8DC;">開発（設計）</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">マサさん</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#4D7D8F;text-align:center;border-bottom:0.5px solid #E8D8DC;">10%</td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">プロンプト設計・要件定義。自動化の上流を担う。構成チームとの連携が品質を決める。</td>
+    </tr>
+    <tr style="background:#EEF7F9;">
+      <td style="padding:8px 10px;font-weight:700;color:#4D7D8F;border-bottom:0.5px solid #E8D8DC;">開発（実装）</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">マサさん</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#4D7D8F;text-align:center;border-bottom:0.5px solid #E8D8DC;">10%</td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">GPT API・フォームUI・画像AI連携など実装全般。v2以降のスケールを担う。</td>
+    </tr>
+    <tr>
+      <td style="padding:8px 10px;font-weight:700;color:#9B8490;border-bottom:0.5px solid #E8D8DC;">サンプル収集</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">ずぼこ・なな（アフィ）・かおり（自社）</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#9B8490;text-align:center;border-bottom:0.5px solid #E8D8DC;">4%</td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">売れているストーリーズの収集・分類。構成チームの材料を作る。3名で分配。</td>
+    </tr>
+    <tr style="background:#FDF4F6;">
+      <td style="padding:8px 10px;font-weight:700;color:#8C5568;border-bottom:0.5px solid #E8D8DC;">実績作り（モニター）</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">なな・ずぼこ・ようこ・そのママ（1名2%）</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#8C5568;text-align:center;border-bottom:0.5px solid #E8D8DC;">6%</td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">実際に投稿して数字を出す。実績なくして販売なし。30日完走が条件。</td>
+    </tr>
+    <tr>
+      <td style="padding:8px 10px;font-weight:700;color:#4A6847;border-bottom:0.5px solid #E8D8DC;">集客・販売担当</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">未定（1〜2名）</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:13px;color:#4A6847;text-align:center;border-bottom:0.5px solid #E8D8DC;">分配なし<br><span style="font-size:10px;">アフィリ成果報酬<br>紹介1件¥800</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">販売経路設計・事例化・アフィ打診。成果は紹介件数×¥800で直接還元。</td>
+    </tr>
+    <tr>
+      <td style="padding:8px 10px;font-weight:700;color:#4D7D8F;border-bottom:0.5px solid #E8D8DC;">画像担当</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">ゆっぴさん・ちぅさん・ずぼこさん</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#C9879A;text-align:center;border-bottom:0.5px solid #E8D8DC;">—<br><span style="font-size:10px;font-weight:400;color:#9B8490;">別途設計</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">サービスの肝。Canvaでの画像テンプレ量産が前半の最重要作業。3名で分担。</td>
+    </tr>
+    <tr>
+      <td style="padding:8px 10px;font-weight:700;color:#4D7D8F;border-bottom:0.5px solid #E8D8DC;">分析担当</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid #E8D8DC;">かつこさん</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#4D7D8F;text-align:center;border-bottom:0.5px solid #E8D8DC;">—<br><span style="font-size:10px;font-weight:400;color:#9B8490;">別途設計</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B4F5A;border-bottom:0.5px solid #E8D8DC;">ログ集計・パターン抽出・改善提案。v1から本格稼働。</td>
+    </tr>
+    <tr style="background:#F5EEF0;">
+      <td style="padding:8px 10px;font-weight:700;" colspan="2">合計（分配対象）</td>
+      <td style="padding:8px 10px;font-weight:700;font-size:15px;color:#C9879A;text-align:center;">75%</td>
+      <td style="padding:8px 10px;font-size:11px;color:#9B8490;">残25%は画像担当・分析担当・運営費の配分として別途確定。9月以降の利益から分配。7〜8月は最低保証なし。</td>
+    </tr>
+  </table>
+  </div>
+
+</div>
+
+<!-- ===== スケジュール ===== -->
+<div class="section" id="s4">
+  <div class="section-tag" style="background:#F5E6EA;color:#8C5568;">04 スケジュール</div>
+  <div class="section-title">タイムライン（7月頭リリース目標）</div>
+  <div class="section-sub">5月第3週キックオフ ／ 最速6月中旬・確実に7月頭</div>
+
+  <!-- フェーズ概要 -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">
+    <div class="card" style="border-top:3px solid #C9879A;">
+      <div style="font-size:10px;font-weight:700;color:#C9879A;margin-bottom:3px;">v0 手動配信</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:3px;">5月W3〜6月W4</div>
+      <div style="font-size:11px;color:#6B4F5A;line-height:1.6;">モニター実招集・30日テンプレ手渡し・ログ収集</div>
+    </div>
+    <div class="card" style="border-top:3px solid #7AAFC0;">
+      <div style="font-size:10px;font-weight:700;color:#4D7D8F;margin-bottom:3px;">v1 型の言語化</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:3px;">7月W1〜7月W4</div>
+      <div style="font-size:11px;color:#6B4F5A;line-height:1.6;">ログ分析・訴求パターン構造化・プロンプト設計開始</div>
+    </div>
+    <div class="card" style="border-top:3px solid #8FA88A;">
+      <div style="font-size:10px;font-weight:700;color:#4A6847;margin-bottom:3px;">v2 AI半自動化</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:3px;">8月〜2026年6月</div>
+      <div style="font-size:11px;color:#6B4F5A;line-height:1.6;">GPT実装・画像生成・精度検証</div>
+    </div>
+    <div class="card" style="border-top:3px solid #A86678;">
+      <div style="font-size:10px;font-weight:700;color:#A86678;margin-bottom:3px;">v3 リリース</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:3px;">2026年7月〜</div>
+      <div style="font-size:11px;color:#6B4F5A;line-height:1.6;">AIジェネレーター公開・本格販売開始</div>
+    </div>
+  </div>
+
+  <!-- ガント -->
+  <div class="gantt-wrap">
+  <div class="gantt">
+    <div class="g-head">
+      <div class="g-head-lbl" style="text-align:left;padding-left:6px;">担当</div>
+      <div class="g-head-lbl">5月<br>W3</div><div class="g-head-lbl">5月<br>W4</div>
+      <div class="g-head-lbl">6月<br>W1</div><div class="g-head-lbl">6月<br>W2</div>
+      <div class="g-head-lbl">6月<br>W3</div><div class="g-head-lbl">6月<br>W4</div>
+      <div class="g-head-lbl">7月<br>W1</div><div class="g-head-lbl">7月<br>W2</div>
+      <div class="g-head-lbl">7月<br>W3</div><div class="g-head-lbl">7月<br>W4</div>
+      <div class="g-head-lbl">8月<br>W1</div><div class="g-head-lbl">8月<br>W2</div>
+    </div>
+
+    <!-- フェーズ帯 -->
+    <div class="g-phase-row">
+      <div></div>
+      <div style="grid-column:2/8;height:16px;background:#F5E6EA;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#8C5568;">v0 手動配信</div>
+      <div style="grid-column:8/11;height:16px;background:#DFF0F5;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#4D7D8F;">v1 型の言語化</div>
+      <div style="grid-column:11/13;height:16px;background:#E4EDE3;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#4A6847;">v2準備</div>
+    </div>
+
+    <div class="g-sec">コア管理</div>
+
+    <div class="g-row">
+      <div class="g-label" style="color:#8C5568;">PDM（あなた）<br><span style="font-size:8px;color:#9B8490;font-weight:400;">設計・判断する人</span></div>
+      <div class="g-cell" style="grid-column:2/5;"><div class="g-bar" style="background:#C9879A;color:#fff;left:0;right:0;">テンプレ設計・各担当への指示</div></div>
+      <div class="g-cell" style="grid-column:5/13;"><div class="g-bar" style="background:#A86678;color:#fff;left:0;right:0;">ジャッジ・次フェーズ設計・全体管理</div></div>
+    </div>
+    <div class="g-row">
+      <div class="g-label" style="color:#C9879A;">★DIR（空席）<br><span style="font-size:8px;color:#9B8490;font-weight:400;">進行を管理する人</span></div>
+      <div class="g-cell" style="grid-column:2/4;"><div class="g-bar" style="background:#F5E6EA;color:#C9879A;border:1px dashed #C9879A;left:0;right:0;">★今日確保</div></div>
+      <div class="g-cell" style="grid-column:4/13;"><div class="g-bar" style="background:#F5E6EA;color:#C9879A;border:1px dashed #C9879A;left:0;right:0;">スケジュール・タスク・進捗管理（全期間）</div></div>
+    </div>
+
+    <div class="g-sec">コンテンツ制作</div>
+
+    <div class="g-row">
+      <div class="g-label" style="color:#4A6847;">構成担当<br><span style="font-size:8px;color:#9B8490;font-weight:400;">売れる言葉を作る人</span></div>
+      <div class="g-cell" style="grid-column:2/4;"><div class="g-bar" style="background:#4A6847;color:#fff;left:0;right:0;">参考収集・訴求言語化</div></div>
+      <div class="g-cell" style="grid-column:4/7;"><div class="g-bar" style="background:#8FA88A;color:#fff;left:0;right:0;">30日分の文言作成</div></div>
+      <div class="g-cell" style="grid-column:7/10;"><div class="g-bar" style="background:#4A6847;color:#fff;left:0;right:0;">パターン構造化</div></div>
+      <div class="g-cell" style="grid-column:10/13;"><div class="g-bar" style="background:#8FA88A;color:#fff;left:0;right:0;">AI文言レビュー</div></div>
+    </div>
+    <div class="g-row">
+      <div class="g-label" style="color:#C9879A;">★画像デザイン（空席）<br><span style="font-size:8px;color:#9B8490;font-weight:400;">見た目を作る人</span></div>
+      <div class="g-cell" style="grid-column:2/5;"><div class="g-bar" style="background:#F5E6EA;color:#C9879A;border:1px dashed #C9879A;left:0;right:0;">★v1開始前に確保</div></div>
+      <div class="g-cell" style="grid-column:5/10;"><div class="g-bar" style="background:#F5E6EA;color:#C9879A;border:1px dashed #C9879A;left:0;right:0;">Canvaテンプレ制作・整備</div></div>
+      <div class="g-cell" style="grid-column:10/13;"><div class="g-bar" style="background:#F5E6EA;color:#C9879A;border:1px dashed #C9879A;left:0;right:0;">AI画像連携準備</div></div>
+    </div>
+
+    <div class="g-sec">開発・技術</div>
+
+    <div class="g-row">
+      <div class="g-label" style="color:#4D7D8F;">AI開発（設計）<br><span style="font-size:8px;color:#9B8490;font-weight:400;">自動化を設計する人</span></div>
+      <div class="g-cell" style="grid-column:2/4;"><div class="g-bar" style="background:#7AAFC0;color:#fff;left:0;right:0;">ログフォーム設計</div></div>
+      <div class="g-cell" style="grid-column:4/8;"><div class="g-bar" style="background:#4D7D8F;color:#fff;left:0;right:0;">ログ集計・ROI試算</div></div>
+      <div class="g-cell" style="grid-column:8/13;"><div class="g-bar" style="background:#7AAFC0;color:#fff;left:0;right:0;">プロンプト設計・要件定義</div></div>
+    </div>
+    <div class="g-row">
+      <div class="g-label" style="color:#4D7D8F;">AI開発（実装）<br><span style="font-size:8px;color:#9B8490;font-weight:400;">実際に作る人</span></div>
+      <div class="g-cell" style="grid-column:2/8;"><div class="g-bar" style="background:#EEF7F9;color:#4D7D8F;border:0.5px solid #7AAFC0;left:0;right:0;">待機・技術検証（素材が揃うまで動けない）</div></div>
+      <div class="g-cell" style="grid-column:8/13;"><div class="g-bar" style="background:#7AAFC0;color:#fff;left:0;right:0;">GPTプロンプト実装・テスト</div></div>
+    </div>
+
+    <div class="g-sec">モニター（実際に使って閲覧数・DM数・タップ数を毎日記録する人たち）</div>
+
+    <div class="g-row">
+      <div class="g-label" style="color:#8C5568;">モニターA<br><span style="font-size:8px;color:#9B8490;font-weight:400;">数字を出す人</span></div>
+      <div class="g-cell" style="grid-column:2/3;"><div class="g-bar" style="background:#F5E6EA;color:#8C5568;border:0.5px solid #C9879A;left:0;right:0;">受け取り</div></div>
+      <div class="g-cell" style="grid-column:3/9;"><div class="g-bar" style="background:#C9879A;color:#fff;left:0;right:0;">毎日投稿・閲覧数/DM数/タップ数を記録</div></div>
+      <div class="g-cell" style="grid-column:9/13;"><div class="g-bar" style="background:#A86678;color:#fff;left:0;right:0;">継続投稿・FB</div></div>
+    </div>
+    <div class="g-row">
+      <div class="g-label" style="color:#8C5568;">モニターB・C<br><span style="font-size:8px;color:#9B8490;font-weight:400;">数字を出す人</span></div>
+      <div class="g-cell" style="grid-column:2/4;"><div class="g-bar" style="background:#F5E6EA;color:#8C5568;border:0.5px solid #C9879A;left:0;right:0;">受け取り</div></div>
+      <div class="g-cell" style="grid-column:4/10;"><div class="g-bar" style="background:#C9879A;color:#fff;left:0;right:0;">毎日投稿・閲覧数/DM数/タップ数を記録</div></div>
+      <div class="g-cell" style="grid-column:10/13;"><div class="g-bar" style="background:#A86678;color:#fff;left:0;right:0;">継続・FB</div></div>
+    </div>
+
+    <div class="g-sec">分析・集客（数字が溜まってから動く）</div>
+
+    <div class="g-row">
+      <div class="g-label" style="color:#4D7D8F;">分析担当<br><span style="font-size:8px;color:#9B8490;font-weight:400;">数字を読んで改善提案する人</span></div>
+      <div class="g-cell" style="grid-column:2/6;"><div class="g-bar" style="background:#EEF7F9;color:#4D7D8F;border:0.5px solid #7AAFC0;left:0;right:0;">待機（ログが溜まるまで）</div></div>
+      <div class="g-cell" style="grid-column:6/10;"><div class="g-bar" style="background:#7AAFC0;color:#fff;left:0;right:0;">閲覧数・DM数・タップ数を集計・分析</div></div>
+      <div class="g-cell" style="grid-column:10/13;"><div class="g-bar" style="background:#4D7D8F;color:#fff;left:0;right:0;">改善提案レポート</div></div>
+    </div>
+    <div class="g-row">
+      <div class="g-label" style="color:#4A6847;">集客・販売担当<br><span style="font-size:8px;color:#9B8490;font-weight:400;">実績を使って広げる人</span></div>
+      <div class="g-cell" style="grid-column:2/7;"><div class="g-bar" style="background:#E4EDE3;color:#4A6847;border:0.5px solid #8FA88A;left:0;right:0;">販売経路・セールス資料の準備</div></div>
+      <div class="g-cell" style="grid-column:7/13;"><div class="g-bar" style="background:#8FA88A;color:#fff;left:0;right:0;">事例化・アフィリエイト打診・発信</div></div>
+    </div>
+
+  </div>
+  </div>
+
+  <div style="margin-top:10px;display:flex;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#6B4F5A;"><div style="width:10px;height:7px;background:#C9879A;border-radius:2px;"></div>ピンク：リード・モニター</div>
+    <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#6B4F5A;"><div style="width:10px;height:7px;background:#7AAFC0;border-radius:2px;"></div>青：AI・開発・分析</div>
+    <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#6B4F5A;"><div style="width:10px;height:7px;background:#8FA88A;border-radius:2px;"></div>緑：構成・集客</div>
+    <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#6B4F5A;"><div style="width:10px;height:7px;background:#F5E6EA;border:1px dashed #C9879A;border-radius:2px;"></div>破線：空席・要確保</div>
+  </div>
+</div>
+
+<!-- ===== 販売戦略 ===== -->
+<div class="section" id="s5">
+  <div class="section-tag" style="background:#E4EDE3;color:#4A6847;">05 販売戦略</div>
+  <div class="section-title">どうやって広げるか</div>
+  <div class="section-sub">今いるメンバーで動く・現実的な波及の流れ</div>
+
+  <!-- ===== 売上シミュレーション ===== -->
+  <div class="sec-label">📊 売上シミュレーション（6〜10月）</div>
+
+  <!-- 前提メモ -->
+  <div style="background:#F5EEF0;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#6B4F5A;line-height:1.75;">
+    <strong style="color:#8C5568;">前提：</strong>
+    6月＝スターター（¥9,800買い切り）のみ。
+    7〜8月は限定価格（通常¥3,980・PDCA¥6,980）＋紹介拡散キャンペーンで加速期。
+    9月から値上げ（通常¥9,980・PDCA¥19,800）。
+    コストは運営費12%＋アフィリ報酬（¥800/件、9月〜）で計算。スターターはアフィリなし。
+  </div>
+
+  <!-- シミュレーション表 -->
+  <div style="overflow-x:auto;margin-bottom:6px;">
+  <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;border:0.5px solid #E8D8DC;font-size:11px;">
+    <thead>
+      <tr style="background:#F5EEF0;">
+        <th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:#9B8490;border-bottom:0.5px solid #E8D8DC;white-space:nowrap;"></th>
+        <th style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;color:#9B8490;border-bottom:0.5px solid #E8D8DC;border-left:0.5px solid #E8D8DC;white-space:nowrap;">6月</th>
+        <th colspan="2" style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;color:#C9879A;border-bottom:0.5px solid #E8D8DC;border-left:0.5px solid #E8D8DC;background:#FDF4F6;">7月<br><span style="font-weight:400;font-size:9px;">🔥 紹介拡散期</span></th>
+        <th colspan="2" style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;color:#C9879A;border-bottom:0.5px solid #E8D8DC;border-left:0.5px solid #E8D8DC;background:#FDF4F6;">8月<br><span style="font-weight:400;font-size:9px;">🔥 紹介拡散期</span></th>
+        <th colspan="2" style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;color:#8C5568;border-bottom:0.5px solid #E8D8DC;border-left:0.5px solid #E8D8DC;">9月<br><span style="font-weight:400;font-size:9px;">値上げ</span></th>
+        <th colspan="2" style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;color:#8C5568;border-bottom:0.5px solid #E8D8DC;border-left:0.5px solid #E8D8DC;">10月</th>
+      </tr>
+      <tr style="background:#F5EEF0;">
+        <th style="padding:6px 10px;text-align:left;font-size:9px;font-weight:700;color:#9B8490;border-bottom:1px solid #E8D8DC;"></th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#9B8490;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:400;">現実的</th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#9B8490;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:400;background:#FDF4F6;">現実的</th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#C9879A;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:700;background:#FDF4F6;">楽観</th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#9B8490;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:400;background:#FDF4F6;">現実的</th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#C9879A;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:700;background:#FDF4F6;">楽観</th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#9B8490;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:400;">現実的</th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#8C5568;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:700;">楽観</th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#9B8490;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:400;">現実的</th>
+        <th style="padding:6px 8px;text-align:center;font-size:9px;color:#8C5568;border-bottom:1px solid #E8D8DC;border-left:0.5px solid #E8D8DC;font-weight:700;">楽観</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:0.5px solid #E8D8DC;">
+        <td style="padding:8px 10px;font-weight:700;font-size:10px;color:#3D2B35;white-space:nowrap;background:#FAF7F4;">👥 利用人数</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;">10人</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;background:#FDF4F6;">13人</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;background:#FDF4F6;font-weight:700;color:#C9879A;">20人</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;background:#FDF4F6;">35人</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;background:#FDF4F6;font-weight:700;color:#C9879A;">60人</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;">60人</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;color:#8C5568;">120人</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;">100人</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;color:#8C5568;">200人</td>
+      </tr>
+      <tr style="border-bottom:0.5px solid #E8D8DC;background:#FAFAFA;">
+        <td style="padding:6px 10px;font-size:10px;color:#9B8490;white-space:nowrap;padding-left:18px;">うち スターター</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">10人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;background:#FDF4F6;">3人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;background:#FDF4F6;">5人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;background:#FDF4F6;">—</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;background:#FDF4F6;">—</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">—</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">—</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">—</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">—</td>
+      </tr>
+      <tr style="border-bottom:0.5px solid #E8D8DC;background:#FAFAFA;">
+        <td style="padding:6px 10px;font-size:10px;color:#9B8490;white-space:nowrap;padding-left:18px;">うち 通常プラン</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">—</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;background:#FDF4F6;">8人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;background:#FDF4F6;">12人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;background:#FDF4F6;">25人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;background:#FDF4F6;">42人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">45人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">90人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">75人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">150人</td>
+      </tr>
+      <tr style="border-bottom:0.5px solid #E8D8DC;background:#FAFAFA;">
+        <td style="padding:6px 10px;font-size:10px;color:#4D7D8F;white-space:nowrap;padding-left:18px;">うち PDCAプラン</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#9B8490;">—</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#4D7D8F;background:#FDF4F6;">2人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#4D7D8F;background:#FDF4F6;">3人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#4D7D8F;background:#FDF4F6;">10人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#4D7D8F;background:#FDF4F6;">18人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#4D7D8F;">15人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#4D7D8F;">30人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#4D7D8F;">25人</td>
+        <td style="padding:6px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:10px;color:#4D7D8F;">50人</td>
+      </tr>
+      <tr style="border-bottom:0.5px solid #E8D8DC;">
+        <td style="padding:8px 10px;font-weight:700;font-size:10px;color:#3D2B35;white-space:nowrap;background:#FAF7F4;">💰 売上</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;">¥98,000</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;background:#FDF4F6;">¥45,340</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;color:#C9879A;background:#FDF4F6;">¥68,840</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;background:#FDF4F6;">¥168,950</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;color:#C9879A;background:#FDF4F6;">¥291,540</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;">¥746,700</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;color:#8C5568;">¥1,487,400</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;">¥1,244,500</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;color:#8C5568;">¥2,484,500</td>
+      </tr>
+      <tr style="border-bottom:0.5px solid #E8D8DC;">
+        <td style="padding:8px 10px;font-weight:700;font-size:10px;color:#3D2B35;white-space:nowrap;background:#FAF7F4;">📦 コスト</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;">¥11,760</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;background:#FDF4F6;">¥5,441</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;background:#FDF4F6;">¥8,261</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;background:#FDF4F6;">¥20,274</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;background:#FDF4F6;">¥34,985</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;">¥115,404</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;">¥225,288</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;">¥209,340</td>
+        <td style="padding:8px 8px;text-align:center;border-left:0.5px solid #E8D8DC;color:#9B8490;">¥410,540</td>
+      </tr>
+      <tr style="border-bottom:0.5px solid #E8D8DC;background:#FAFAFA;">
+        <td style="padding:5px 10px;font-size:9.5px;color:#9B8490;white-space:nowrap;padding-left:18px;">運営費（12%）</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥11,760</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;background:#FDF4F6;">¥5,441</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;background:#FDF4F6;">¥8,261</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;background:#FDF4F6;">¥20,274</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;background:#FDF4F6;">¥34,985</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥89,604</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥178,488</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥149,340</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥298,140</td>
+      </tr>
+      <tr style="border-bottom:0.5px solid #E8D8DC;background:#FAFAFA;">
+        <td style="padding:5px 10px;font-size:9.5px;color:#9B8490;white-space:nowrap;padding-left:18px;">アフィリ報酬（¥800/件）</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">—</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;background:#FDF4F6;">—</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;background:#FDF4F6;">—</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;background:#FDF4F6;">—</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;background:#FDF4F6;">—</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥25,800</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥46,800</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥60,000</td>
+        <td style="padding:5px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-size:9.5px;color:#9B8490;">¥112,400</td>
+      </tr>
+      <tr style="background:#F5E6EA;">
+        <td style="padding:10px 10px;font-weight:700;font-size:11px;color:#8C5568;white-space:nowrap;">✨ 収益（手残り）</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:12px;color:#8C5568;">¥86,240</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:12px;color:#8C5568;background:#FDF4F6;">¥39,899</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:12px;color:#C9879A;background:#FDF4F6;">¥60,579</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:12px;color:#8C5568;background:#FDF4F6;">¥148,676</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:12px;color:#C9879A;background:#FDF4F6;">¥256,555</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:12px;color:#8C5568;">¥631,296</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:13px;color:#C9879A;">¥1,262,112</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:12px;color:#8C5568;">¥1,035,160</td>
+        <td style="padding:10px 8px;text-align:center;border-left:0.5px solid #E8D8DC;font-weight:700;font-size:13px;color:#C9879A;">¥2,073,960</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+    <div style="background:#FDF4F6;border-left:3px solid #C9879A;border-radius:0 7px 7px 0;padding:9px 12px;font-size:10.5px;color:#6B4F5A;line-height:1.7;">
+      <strong style="color:#C9879A;display:block;margin-bottom:3px;">🔥 7〜8月が勝負の理由</strong>
+      限定価格＋紹介割引＋アフィリ開始前の「口コミだけで動く」フェーズ。ここで30〜60人の実績を積めれば、9月の値上げ後も「今が一番安かった」という話が広まり、次の100人を呼ぶ。
+    </div>
+    <div style="background:#F5EEF0;border-left:3px solid #9B8490;border-radius:0 7px 7px 0;padding:9px 12px;font-size:10.5px;color:#6B4F5A;line-height:1.7;">
+      <strong style="color:#8C5568;display:block;margin-bottom:3px;">📌 売上計算の根拠</strong>
+      7〜8月：通常¥3,980×人数＋PDCA¥6,980×人数＋スターター¥9,800×件数。<br>
+      9月〜：通常¥9,980＋PDCA¥19,800（値上げ後）。<br>
+      コスト＝運営費12%＋アフィリ報酬¥800/件（9月〜のみ）。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-label">販売の波：3ステップ</div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;">
+    <div class="wave-card" style="border-top:3px solid #C9879A;">
+      <div class="wave-num">第一波</div>
+      <div class="wave-title">今いる10人でモニター実績を作る</div>
+      <div class="wave-desc">無料または超低価格でモニター使用。「使った感想」「数値の変化」を言語化してもらう。これが最初の事例になる。</div>
+      <div class="wave-timing" style="background:#F5E6EA;color:#8C5568;">今すぐ〜6月</div>
+    </div>
+    <div class="wave-card" style="border-top:3px solid #7AAFC0;">
+      <div class="wave-num">第二波</div>
+      <div class="wave-title">講座全体40人に事例つきで紹介</div>
+      <div class="wave-desc">「このツールを使ったモニターがこういう結果を出した」という事例つきで紹介。40人中5〜8人が使えば十分。全員に刺さらなくていい。</div>
+      <div class="wave-timing" style="background:#DFF0F5;color:#4D7D8F;">7月〜</div>
+    </div>
+    <div class="wave-card" style="border-top:3px solid #8FA88A;">
+      <div class="wave-num">第三波</div>
+      <div class="wave-title">SNS講座系発信者へのアフィリ打診</div>
+      <div class="wave-desc">AIや発信効率化を語れるアカウントを持つ発信者に「講座ツールとして組み込んでもらう」交渉。アフィリ報酬（売上の20〜30%）を設定。</div>
+      <div class="wave-timing" style="background:#E4EDE3;color:#4A6847;">実績が出てから</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:12px;font-weight:700;color:#8C5568;margin-bottom:8px;">フロントのアカウント問題について</div>
+    <div style="font-size:11.5px;color:#6B4F5A;line-height:1.7;">暮らし系・おやつ系のアカウントでいきなりAIツールを売るのは文脈が合わない。<br>最初の50〜100人は<strong>フィードに乗せなくてもいい。DM・コミュニティ内チャット・口コミで売れる。</strong><br>「使って成果が出た人が自然に話したくなる体験を作る」ことが、最強の販売チャネルになる。</div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-label">🎁 7〜8月 キャンペーン施策</div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;">
+    <div style="background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;">
+      <div style="background:#C9879A;padding:7px 14px;">
+        <div style="font-size:10px;font-weight:700;color:#fff;opacity:.8;">施策①</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">リリース記念・初月割引</div>
+      </div>
+      <div style="padding:12px 14px;">
+        <div style="font-size:24px;font-weight:700;color:#C9879A;line-height:1.1;">¥1,980<span style="font-size:12px;font-weight:400;color:#9B8490;">/初月のみ</span></div>
+        <div style="font-size:10px;color:#9B8490;margin-bottom:8px;">通常¥3,980 → 初月だけ半額以下</div>
+        <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">リリース後2週間限定。「今が一番安い」「次に見たとき値段が上がっている」という緊急性で背中を押す。期間終了後は通常価格へ。</div>
+        <div style="margin-top:10px;display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;background:#F5E6EA;color:#8C5568;border-radius:3px;">2週間限定</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;">
+      <div style="background:#A86678;padding:7px 14px;">
+        <div style="font-size:10px;font-weight:700;color:#fff;opacity:.8;">施策②</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">紹介割引（ダブル特典）</div>
+      </div>
+      <div style="padding:12px 14px;">
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="flex:1;background:#F5E6EA;border-radius:7px;padding:8px 10px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;color:#8C5568;margin-bottom:2px;">紹介した人</div>
+            <div style="font-size:18px;font-weight:700;color:#C9879A;">¥500<span style="font-size:10px;font-weight:400;color:#9B8490;">引き</span></div>
+          </div>
+          <div style="flex:1;background:#FDF4F6;border-radius:7px;padding:8px 10px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;color:#8C5568;margin-bottom:2px;">された人</div>
+            <div style="font-size:18px;font-weight:700;color:#C9879A;">¥1,980<span style="font-size:10px;font-weight:400;color:#9B8490;">/初月</span></div>
+          </div>
+        </div>
+        <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">口コミで動いてもらうための仕組み。紹介した側も得する設計にすることで、「広めたい」という自然な動機が生まれる。</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;">
+      <div style="background:#8FA88A;padding:7px 14px;">
+        <div style="font-size:10px;font-weight:700;color:#fff;opacity:.8;">施策③</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">アフィリエイト制度</div>
+      </div>
+      <div style="padding:12px 14px;">
+        <div style="font-size:24px;font-weight:700;color:#5E8060;line-height:1.1;">¥800<span style="font-size:12px;font-weight:400;color:#9B8490;">/紹介1件</span></div>
+        <div style="font-size:10px;color:#9B8490;margin-bottom:8px;">SNS講座系・発信効率化系アカウント向け</div>
+        <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">「自分のフォロワーに紹介したら報酬がもらえる」という動機づけ。9月以降に本格稼働。実績が出てから声がけするほうが刺さる。</div>
+        <div style="margin-top:10px;display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;background:#E4EDE3;color:#4A6847;border-radius:3px;">9月〜本格始動</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:0.5px solid #E8D8DC;border-radius:10px;overflow:hidden;">
+      <div style="background:#7AAFC0;padding:7px 14px;">
+        <div style="font-size:10px;font-weight:700;color:#fff;opacity:.8;">施策④</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">PDCAプランへのアップセル</div>
+      </div>
+      <div style="padding:12px 14px;">
+        <div style="font-size:24px;font-weight:700;color:#4D7D8F;line-height:1.1;">1ヶ月後<span style="font-size:12px;font-weight:400;color:#9B8490;">に案内</span></div>
+        <div style="font-size:10px;color:#9B8490;margin-bottom:8px;">¥3,980 → ¥6,980（+¥3,000でPDCA対応）</div>
+        <div style="font-size:11.5px;color:#6B4F5A;line-height:1.65;">1ヶ月使ってもらった後、「数字を見て改善したい人はこちら」とPDCAプランへ誘導。満足度が高いタイミングでのアップセルが効きやすい。</div>
+        <div style="margin-top:10px;display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;background:#DFF0F5;color:#4D7D8F;border-radius:3px;">入会1ヶ月後に案内</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#FDF4F6;border:1px solid #E8D8DC;border-radius:8px;padding:11px 14px;margin-bottom:6px;">
+    <div style="font-size:11px;font-weight:700;color:#8C5568;margin-bottom:4px;">📌 キャンペーンの設計思想</div>
+    <div style="font-size:11.5px;color:#6B4F5A;line-height:1.7;">「今が一番安い」という構造を最初から作っておく。7〜8月に登録した人も9月から値上げ適用（特別継続なし）。これは値段を上げるためではなく、<strong>早く動いた人が一番得をする仕組み</strong>として機能する。価格が上がってから後悔する人が、口コミを広げる。</div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-label">波及効果予測</div>
+
+  <div style="display:flex;gap:0;align-items:stretch;margin-bottom:12px;overflow-x:auto;">
+    <div style="flex:1;min-width:140px;border:0.5px solid #E8D8DC;border-radius:8px 0 0 8px;overflow:hidden;background:#fff;">
+      <div style="background:#F5EEF0;padding:6px 12px;border-bottom:0.5px solid #E8D8DC;">
+        <div style="font-size:10px;font-weight:700;color:#9B8490;">4月（現在）</div>
+        <div style="font-size:11px;font-weight:700;color:#3D2B35;">PJ内モニター</div>
+      </div>
+      <div style="padding:10px 12px;">
+        <div style="font-size:26px;font-weight:700;color:#9B8490;line-height:1;">3<span style="font-size:13px;">人</span></div>
+        <div style="font-size:10px;color:#9B8490;margin-bottom:8px;">¥0（無料）</div>
+        <div style="font-size:10px;color:#6B4F5A;line-height:1.6;">プロジェクトメンバーが自分のアカウントでまず試す。実績の種を作る段階。</div>
+        <div style="margin-top:8px;font-size:10px;font-weight:700;padding:3px 8px;background:#F5EEF0;color:#9B8490;border-radius:3px;display:inline-block;">社内限定</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 2px;background:#fff;border-top:0.5px solid #E8D8DC;border-bottom:0.5px solid #E8D8DC;font-size:18px;color:#C9879A;">›</div>
+    <div style="flex:1;min-width:140px;border:0.5px solid #E8D8DC;border-left:none;overflow:hidden;background:#fff;">
+      <div style="background:#FDF4F6;padding:6px 12px;border-bottom:0.5px solid #E8D8DC;">
+        <div style="font-size:10px;font-weight:700;color:#C9879A;">5月（v0）</div>
+        <div style="font-size:11px;font-weight:700;color:#3D2B35;">不完全版・知り合い</div>
+      </div>
+      <div style="padding:10px 12px;">
+        <div style="font-size:26px;font-weight:700;color:#C9879A;line-height:1;">5<span style="font-size:11px;color:#9B8490;">〜</span>10<span style="font-size:13px;">人</span></div>
+        <div style="font-size:10px;color:#9B8490;margin-bottom:8px;">¥0（無料モニター）</div>
+        <div style="font-size:10px;color:#6B4F5A;line-height:1.6;">4月モニターの知り合いや講座内の信頼できる人に声がけ。「使ってみて感想を教えて」レベル。</div>
+        <div style="margin-top:8px;font-size:10px;font-weight:700;padding:3px 8px;background:#F5E6EA;color:#8C5568;border-radius:3px;display:inline-block;">知り合い限定</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 2px;background:#fff;border-top:0.5px solid #E8D8DC;border-bottom:0.5px solid #E8D8DC;font-size:18px;color:#C9879A;">›</div>
+    <div style="flex:1;min-width:140px;border:0.5px solid #E8D8DC;border-left:none;overflow:hidden;background:#fff;">
+      <div style="background:#FDF4F6;padding:6px 12px;border-bottom:0.5px solid #E8D8DC;">
+        <div style="font-size:10px;font-weight:700;color:#C9879A;">6月（v1）</div>
+        <div style="font-size:11px;font-weight:700;color:#3D2B35;">もうすぐリリース版</div>
+      </div>
+      <div style="padding:10px 12px;">
+        <div style="font-size:26px;font-weight:700;color:#C9879A;line-height:1;">30<span style="font-size:13px;">人</span></div>
+        <div style="font-size:10px;color:#9B8490;margin-bottom:8px;">モニター価格（¥3,000〜5,000程度）</div>
+        <div style="font-size:10px;color:#6B4F5A;line-height:1.6;">5月モニターの紹介 ＋ 講座全体40人へのアナウンス。「もうすぐ正式リリース、今なら特別価格」で後押し。</div>
+        <div style="margin-top:8px;font-size:10px;font-weight:700;padding:3px 8px;background:#F5E6EA;color:#8C5568;border-radius:3px;display:inline-block;">紹介 ＋ 講座内</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 2px;background:#fff;border-top:0.5px solid #E8D8DC;border-bottom:0.5px solid #E8D8DC;font-size:18px;color:#C9879A;">›</div>
+    <div style="flex:1;min-width:140px;border:2px solid #C9879A;border-left:none;border-radius:0 8px 8px 0;overflow:hidden;background:#FDF4F6;">
+      <div style="background:#C9879A;padding:6px 12px;border-bottom:0.5px solid #E8D8DC;">
+        <div style="font-size:10px;font-weight:700;color:#fff;">7月（v2）</div>
+        <div style="font-size:11px;font-weight:700;color:#fff;">正式リリース・有料</div>
+      </div>
+      <div style="padding:10px 12px;">
+        <div style="font-size:26px;font-weight:700;color:#C9879A;line-height:1;">有料<span style="font-size:13px;">展開</span></div>
+        <div style="font-size:10px;color:#9B8490;margin-bottom:8px;">¥3,980/月（AIジェネレーター）</div>
+        <div style="font-size:10px;color:#6B4F5A;line-height:1.6;">6月モニターの実績をもとに正式販売開始。SNS講座系発信者へのアフィリエイト打診も開始。</div>
+        <div style="margin-top:8px;font-size:10px;font-weight:700;padding:3px 8px;background:#F5E6EA;color:#8C5568;border-radius:3px;display:inline-block;">一般公開</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#fff;border:0.5px solid #E8D8DC;border-radius:8px;padding:12px 14px;">
+    <div style="font-size:10px;font-weight:700;color:#9B8490;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">累計ユーザー数の予測推移</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;color:#9B8490;width:44px;text-align:right;flex-shrink:0;">4月</div>
+        <div style="flex:1;background:#F5EEF0;border-radius:3px;height:20px;position:relative;">
+          <div style="width:3%;background:#9B8490;height:100%;border-radius:3px;"></div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#9B8490;width:50px;flex-shrink:0;">3人</div>
+        <div style="font-size:10px;color:#9B8490;white-space:nowrap;">¥0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;color:#C9879A;width:44px;text-align:right;flex-shrink:0;">5月</div>
+        <div style="flex:1;background:#F5EEF0;border-radius:3px;height:20px;position:relative;">
+          <div style="width:10%;background:#C9879A;height:100%;border-radius:3px;min-width:24px;"></div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#C9879A;width:50px;flex-shrink:0;">〜10人</div>
+        <div style="font-size:10px;color:#9B8490;white-space:nowrap;">¥0（無料）</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;color:#C9879A;width:44px;text-align:right;flex-shrink:0;">6月</div>
+        <div style="flex:1;background:#F5EEF0;border-radius:3px;height:20px;position:relative;">
+          <div style="width:30%;background:#A86678;height:100%;border-radius:3px;"></div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#A86678;width:50px;flex-shrink:0;">〜30人</div>
+        <div style="font-size:10px;color:#9B8490;white-space:nowrap;">モニター価格</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;color:#8C5568;width:44px;text-align:right;flex-shrink:0;">7月〜</div>
+        <div style="flex:1;background:#F5EEF0;border-radius:3px;height:20px;position:relative;">
+          <div style="width:100%;background:#8C5568;height:100%;border-radius:3px;display:flex;align-items:center;padding:0 8px;font-size:9px;color:#fff;font-weight:700;">有料展開・アフィリ開始・拡大フェーズ</div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#8C5568;width:50px;flex-shrink:0;">拡大</div>
+        <div style="font-size:10px;color:#9B8490;white-space:nowrap;">¥3,980/月〜</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:#9B8490;line-height:1.7;">
+      各フェーズで「成果が出た人の声」を積み上げることが次の波への燃料になる。<br>
+      7月リリース時点で30人分の実績があれば、SNS講座系発信者へのアフィリ打診が説得力を持つ。
+    </div>
+  </div>
+</div>
+
+<!-- ===== 私へのメモ（最終ページ・投影不要） ===== -->
+<div class="section" id="s7" style="background:#FDF4F6;">
+  <div class="section-tag" style="background:#C9879A;color:#fff;">★ 私へのメモ（投影不要・参考）</div>
+  <div class="section-title" style="color:#8C5568;">今日のミーティングで意識すること</div>
+  <div class="section-sub">これは投影しない。自分用のメモです。</div>
+
+  <div class="memo-box">
+    <div class="memo-title">冒頭マインドセットで伝えること（5分）</div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">▶</span><div>「正解がない」を最初に言う。そうしないと「失敗したら怒られる」という空気が生まれる。</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">▶</span><div>「言われたことだけやればいい場ではない」と明言する。ただし責めるためでなく、自分で考えてほしいから伝える。</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">▶</span><div>「不安があれば言ってほしい」を必ず添える。そうしないと「正解がない=不安でいい」になる可能性がある。</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">▶</span><div>「見込みはある。無鉄砲ではない」を最後に言って締める。マインドセット→不安→でも大丈夫の順番が大事。</div></div>
+  </div>
+
+  <div class="memo-box">
+    <div class="memo-title">不安を感じている人へのフォロー（想定Q&A）</div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">Q</span><div>「成果が出なかったら責任を取らないといけないですか？」<br>→「成果の責任は誰にもない。ただし、何もしないで成果が出ないのは困る。試して・記録して・改善する、それだけをお願いしたい」</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">Q</span><div>「自分にできるかわからない」<br>→「できないことは言ってほしい。役割は変えられる。最初から完璧にやれる人はいない」</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">Q</span><div>「時間が取れるかわからない」<br>→「週何時間使えるか正直に教えてほしい。それに合う役割を一緒に考える」</div></div>
+  </div>
+
+  <div class="memo-box">
+    <div class="memo-title">今日必ず決めること</div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">①</span><div>ディレクター（空席）に手を挙げてくれる人を確認する</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">②</span><div>モニター3名以上の参加確約を今日もらう</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">③</span><div>構成担当・分析担当・集客担当の仮配置を決める</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">④</span><div>次回の定例日時を今日その場で決める（来週中に設定）</div></div>
+  </div>
+
+  <div class="memo-box">
+    <div class="memo-title">圭佑さん・省吾さんへの共有について</div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">▶</span><div>「この資料をそのまま見せます」と事前に伝えておくと信頼感が出る。</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">▶</span><div>変更が入る可能性があることをメンバーに先に伝えておく（今日のアジェンダに入れてある）。</div></div>
+    <div class="memo-item"><span style="color:#C9879A;font-weight:700;">▶</span><div>「変更されても動じない」姿勢を見せることがリーダーとしての信頼につながる。</div></div>
+  </div>
+</div>
+
+<script>
+function goTo(id, btn){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+// ハイライト追跡
+window.addEventListener('scroll',()=>{
+  const sections=['s0','s1','s2','s3','s4','s5','s6','s7'];
+  const btns=document.querySelectorAll('.nav-btn');
+  let cur=0;
+  sections.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el && el.getBoundingClientRect().top<=80) cur=i;
+  });
+  btns.forEach(b=>b.classList.remove('active'));
+  btns[cur].classList.add('active');
+});
+</script>
+</body>
+</html>
