@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stories AI — SNS発信者のためのストーリーズ自動生成</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --purple:      #7C3AED;
+  --purple-dark: #5B21B6;
+  --purple-light:#EDE9FE;
+  --purple-mid:  #C4B5FD;
+  --bg:          #F5F3FF;
+  --white:       #FFFFFF;
+  --text:        #1E1B2E;
+  --muted:       #6B7280;
+  --border:      #E5E7EB;
+  --green:       #10B981;
+  --radius-lg:   16px;
+  --radius-md:   12px;
+  --radius-sm:   8px;
+  --shadow:      0 2px 12px rgba(124,58,237,.10);
+  --shadow-card: 0 4px 20px rgba(124,58,237,.08);
+}
+
+body {
+  font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 env(safe-area-inset-bottom);
+}
+
+/* ── スマホ幅コンテナ ── */
+.phone {
+  width: 100%;
+  max-width: 390px;
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ── ヘッダーバー ── */
+.top-bar {
+  text-align: center;
+  padding: 14px 0 6px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+/* ── スクロールエリア ── */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 18px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── ヒーローカード ── */
+.hero-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 28px 20px 24px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--purple-light);
+  color: var(--purple);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+  letter-spacing: .04em;
+}
+
+.hero-badge::before {
+  content: '✦';
+  font-size: 10px;
+}
+
+.hero-title {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 6px;
+  letter-spacing: -.02em;
+}
+
+.hero-title span {
+  color: var(--purple);
+}
+
+.hero-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+/* CTA ボタン */
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background: var(--purple);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: .03em;
+  box-shadow: 0 4px 16px rgba(124,58,237,.35);
+  transition: all .18s;
+  margin-bottom: 10px;
+}
+
+.btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-trial-note {
+  font-size: 11px;
+  color: var(--purple);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.btn-secondary {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  background: var(--white);
+  color: var(--purple);
+  font-size: 14px;
+  font-weight: 700;
+  border: 1.5px solid var(--purple-mid);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .18s;
+}
+
+.btn-secondary:hover { background: var(--purple-light); }
+
+/* ── 特徴 3 カード ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.feature-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 16px 10px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.feature-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--purple-light);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  font-size: 18px;
+}
+
+.feature-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* ── セクションラベル ── */
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .08em;
+  padding: 0 2px;
+}
+
+/* ── 料金カード ── */
+.plan-tabs {
+  display: flex;
+  background: var(--purple-light);
+  border-radius: 100px;
+  padding: 4px;
+  gap: 2px;
+}
+
+.plan-tab {
+  flex: 1;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--purple);
+  background: transparent;
+  transition: all .18s;
+  white-space: nowrap;
+}
+
+.plan-tab.active {
+  background: var(--purple);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(124,58,237,.25);
+}
+
+.plan-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.plan-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 18px 14px;
+  box-shadow: var(--shadow-card);
+  border: 2px solid transparent;
+  transition: all .18s;
+  cursor: pointer;
+}
+
+.plan-card.featured {
+  border-color: var(--purple);
+  background: linear-gradient(145deg, #faf8ff 0%, #f0ebff 100%);
+}
+
+.plan-name {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.plan-price {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--purple);
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+
+.plan-price-unit {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.plan-price-alt {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  margin-top: 4px;
+}
+
+.plan-price-alt span {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.plan-badge {
+  display: inline-block;
+  background: var(--purple);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 100px;
+  margin-top: 8px;
+  letter-spacing: .02em;
+}
+
+/* ── ボトムナビ ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 390px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.06);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 0 20px;
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.nav-item.active .nav-label { color: var(--purple); }
+.nav-item.active .nav-icon  { color: var(--purple); }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ヘッダーバー -->
+  <div class="top-bar">LP /</div>
+
+  <!-- スクロールエリア -->
+  <div class="scroll-area">
+
+    <!-- ヒーローカード -->
+    <div class="hero-card">
+      <div class="hero-badge">SNS自動化ツール</div>
+      <h1 class="hero-title"><span>Stories</span> AI</h1>
+      <p class="hero-sub">SNS発信者のための<br>ストーリーズ自動生成</p>
+      <button class="btn-primary">3日間無料で始める</button>
+      <p class="btn-trial-note">クレジットカード不要・いつでも解約可</p>
+      <button class="btn-secondary">ログイン</button>
+    </div>
+
+    <!-- 特徴 3 カード -->
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-label">30日分<br>自動生成</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📐</div>
+        <div class="feature-label">ファネル<br>設計済み</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🖼️</div>
+        <div class="feature-label">背景画像<br>合成DL</div>
+      </div>
+    </div>
+
+    <!-- 料金 -->
+    <div class="section-label">料金</div>
+
+    <!-- プランタブ -->
+    <div class="plan-tabs">
+      <button class="plan-tab active">Proプラン</button>
+      <button class="plan-tab">Maxプラン</button>
+      <button class="plan-tab">PDCAプラン</button>
+    </div>
+
+    <!-- プランカード -->
+    <div class="plan-cards">
+      <div class="plan-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">¥3,980<span class="plan-price-unit">/月</span></div>
+        <div class="plan-badge">人気No.1</div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">PDCA</div>
+        <div class="plan-price-alt">別途設定<br><span>伴走付き</span></div>
+        <div style="margin-top:8px; font-size:11px; color:var(--muted); line-height:1.4;">専任サポート<br>付きプラン</div>
+      </div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- ボトムナビ -->
+  <nav class="bottom-nav">
+    <div class="nav-item active">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">ホーム</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">📋</div>
+      <div class="nav-label">履歴</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">マイページ</div>
+    </div>
+  </nav>
+
+</div><!-- /phone -->
+
+<script>
+// プランタブ切り替え
+document.querySelectorAll('.plan-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// ナビ切り替え
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

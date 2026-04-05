@@ -1,0 +1,11 @@
+id,name,description,text_position,overlay_type,overlay_opacity,text_align,accent_type,bg_treatment,persona_match,best_phase,best_content,headline_style,font_weight,color_scheme,cta_position,notes
+bottom,ボトム,下部グラデーション＋テキスト,bottom,gradient_bottom,0.88,left,none,full_image,全タイプ,認知〜告知,エピソード/共感/告知,インパクト重視,900,white_on_dark,bottom,最も汎用的。写真映えさせつつ文字も見やすい
+center,センター,全面オーバーレイ中央配置,center,solid,0.48,center,line_top_bottom,full_image,サン/アース,関係構築〜共感,名言/問いかけ/価値観,短く力強い,900,white_on_dark,bottom,世界観重視。名言系・問いかけに合う
+split,スプリット,上:画像 / 下:白テキスト欄,bottom,none,0,left,none,split_top50,アース,共感教育〜告知,解説/Before-After/手順,読みやすさ重視,700,dark_on_white,bottom,情報量が多い投稿向き。整然とした印象
+top,トップ,上部グラデーション＋テキスト,top,gradient_top,0.88,left,none,full_image,全タイプ,認知〜関係構築,日常/ひとこと/問いかけ,短くシャープ,900,white_on_dark,none,動きのある構図。下に写真の余白ができる
+frame,フレーム,白枠ボーダー中央配置,center,solid,0.45,center,border_white,full_image,サン,関係構築〜共感,価値観/こだわり/世界観,エレガント短め,900,white_on_dark,bottom,高級感・こだわり系アカウント向き
+magazine,マガジン,大見出し＋細ライン雑誌風,bottom,solid,0.35,left,accent_line,full_image,アース/サン,告知〜行動,実績紹介/告知/キャンペーン,大きく太く,900,white_on_dark,bottom,インパクト最大。告知・実績系に最適
+quote,クォート,引用符スタイル中央配置,center,solid,0.55,center,quotation_mark,full_image,ムーン,関係構築〜共感教育,名言/体験談/共感ワード,詩的・感情的,900,white_on_dark,none,感情系・共感系に特化。ムーン型に刺さる
+minimal,ミニマル,白ベース下部テキスト欄,bottom,none,0,left,accent_bar_color,split_top60,アース,認知〜共感教育,日常/tip/解説,落ち着いた読みやすさ,700,dark_on_white,none,清潔感・プロフ向き。文字多めOK
+sidebar,サイドバー,左アクセントバー縦型,center,solid,0.52,left,sidebar_left,full_image,アース,共感教育〜告知,ステップ解説/比較/告知,明快・直線的,700,white_on_dark,bottom,情報整理感が出る。解説系・告知系に合う
+diagonal,ナナメ,斜め分割で動きのある印象,bottom,diagonal_dark,0.82,left,none,full_image,全タイプ,認知〜関係構築,エピソード/日常/before-after,エネルギッシュ,900,white_on_dark,none,動き・エネルギーを演出。スポーツ・変化系コンテンツ向き

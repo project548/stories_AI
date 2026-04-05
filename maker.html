@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stories 画像メーカー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif;background:#FAF7F4;color:#3D2B35;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── shared header ── */
+.s-header{background:#fff;border-bottom:1px solid #E8D8DC;padding:11px 18px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.s-title{font-size:15px;font-weight:700;color:#8C5568;}
+.step-ind{display:flex;align-items:center;gap:5px;margin-left:auto;}
+.s-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid #E8D8DC;color:#C8B4BB;transition:all .2s;flex-shrink:0;}
+.s-dot.active{background:#C9879A;border-color:#C9879A;color:#fff;}
+.s-dot.done{background:#F5E6EA;border-color:#C9879A;color:#C9879A;}
+.s-line{width:20px;height:2px;background:#E8D8DC;border-radius:1px;}
+.s-line.done{background:#C9879A;}
+.back-btn{padding:8px 14px;border-radius:8px;border:0.5px solid #E8D8DC;background:#fff;color:#9B8490;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;margin-left:10px;}
+.back-btn:hover{background:#F5E6EA;border-color:#C9879A;color:#8C5568;}
+
+/* ── step panels ── */
+#step1,#step2,#step3{display:none;flex-direction:column;flex:1;}
+#step1{display:flex;}
+
+/* ── step 1/2 body ── */
+.s-body{flex:1;overflow-y:auto;padding:24px 0;}
+.s-inner{max-width:700px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:20px;}
+.s-section{background:#fff;border:0.5px solid #E8D8DC;border-radius:14px;padding:18px 20px;}
+.s-sec-title{font-size:11px;font-weight:700;color:#9B8490;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;}
+.s-field{margin-bottom:10px;}
+.s-field:last-child{margin-bottom:0;}
+.s-field label{display:block;font-size:11px;font-weight:700;color:#6B4F5A;margin-bottom:4px;}
+.s-field input{width:100%;background:#FAF7F4;border:0.5px solid #E8D8DC;border-radius:8px;padding:9px 11px;font-size:13px;color:#3D2B35;font-family:inherit;outline:none;transition:border-color .15s;}
+.s-field input:focus{border-color:#C9879A;box-shadow:0 0 0 3px rgba(201,135,154,.12);}
+.s-field .hint{font-size:10px;color:#C8B4BB;margin-top:3px;}
+.s-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.api-box{background:#FDF9FA;border:0.5px solid #F5E6EA;border-radius:14px;padding:14px 18px;}
+.api-title{font-size:11px;font-weight:700;color:#C9879A;margin-bottom:8px;}
+.api-note{font-size:11px;color:#9B8490;line-height:1.6;margin-bottom:8px;}
+.s-footer{padding:16px 20px;background:#fff;border-top:1px solid #E8D8DC;flex-shrink:0;}
+.s-footer-inner{max-width:700px;margin:0 auto;display:flex;gap:10px;}
+.next-btn{flex:1;padding:12px;border-radius:10px;border:none;background:#C9879A;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;}
+.next-btn:hover:not(:disabled){background:#B5728A;}
+.next-btn:disabled{background:#D8C0C8;cursor:not-allowed;}
+.next-btn .ld{display:none;}
+.next-btn.loading .ld{display:inline;}
+.next-btn.loading .lb{display:none;}
+
+/* ── step 2: impression selector ── */
+.theme-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.theme-card{border:2.5px solid #E8D8DC;border-radius:14px;padding:18px 16px;cursor:pointer;transition:all .15s;text-align:center;}
+.theme-card:hover{border-color:#C9879A;}
+.theme-card.active{border-color:#C9879A;background:#FDF9FA;}
+.theme-card canvas{display:block;width:100%;border-radius:8px;margin-bottom:10px;background:#111;}
+.theme-card-name{font-size:13px;font-weight:700;color:#3D2B35;margin-bottom:3px;}
+.theme-card-desc{font-size:11px;color:#9B8490;}
+.color-options{display:flex;flex-direction:column;gap:10px;}
+.color-row2{display:flex;align-items:center;gap:10px;}
+.color-row2 label{font-size:11px;font-weight:700;color:#6B4F5A;min-width:60px;}
+.color-row2 input[type=color]{width:36px;height:28px;border:0.5px solid #E8D8DC;border-radius:6px;cursor:pointer;padding:2px;}
+.no-bg-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.no-bg-row input[type=checkbox]{width:16px;height:16px;accent-color:#C9879A;cursor:pointer;}
+.no-bg-row label{font-size:12px;color:#6B4F5A;cursor:pointer;}
+
+/* ── step 3: maker ── */
+.tpl-bar{background:#fff;border-bottom:1px solid #E8D8DC;padding:10px 18px;flex-shrink:0;}
+.bar-label{font-size:10px;font-weight:700;color:#9B8490;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.tpl-list{display:flex;gap:12px;flex-wrap:wrap;}
+.tpl-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.tpl-canvas{border-radius:5px;border:2.5px solid transparent;display:block;transition:border-color .15s;}
+.tpl-item.active .tpl-canvas{border-color:#C9879A;}
+.tpl-name{font-size:10px;color:#9B8490;font-weight:600;}
+.tpl-item.active .tpl-name{color:#C9879A;font-weight:700;}
+.main{display:grid;grid-template-columns:1fr 320px;flex:1;min-height:0;}
+.preview-wrap{padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;overflow-y:auto;}
+#preview{border-radius:10px;box-shadow:0 6px 28px rgba(0,0,0,.25);height:600px;width:auto;display:block;touch-action:none;user-select:none;}
+#preview.cur-default{cursor:crosshair;}
+#preview.cur-hover{cursor:grab;}
+#preview.cur-drag{cursor:grabbing;}
+#preview.cur-draw{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='4' cy='16' r='3' fill='%23C9879A'/%3E%3Cline x1='4' y1='16' x2='16' y2='4' stroke='%23C9879A' stroke-width='2'/%3E%3C/svg%3E") 4 16, crosshair;}
+.preview-hint{font-size:11px;color:#C8B4BB;}
+.sel-hint{font-size:11px;color:#C9879A;font-weight:600;background:#FDF0F3;padding:4px 10px;border-radius:6px;display:none;}
+.draw-active-badge{font-size:11px;color:#fff;font-weight:700;background:#C9879A;padding:4px 12px;border-radius:6px;display:none;}
+.controls{background:#fff;border-left:1px solid #E8D8DC;display:flex;flex-direction:column;min-height:0;}
+.tabs{display:flex;border-bottom:1px solid #E8D8DC;flex-shrink:0;}
+.tab{flex:1;padding:10px 4px;font-size:11px;font-weight:700;color:#9B8490;text-align:center;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .15s;}
+.tab.active{color:#C9879A;border-bottom-color:#C9879A;}
+.tab-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;}
+.tab-pane{display:none;flex-direction:column;gap:10px;}
+.tab-pane.active{display:flex;}
+.field label{display:block;font-size:10px;font-weight:700;color:#9B8490;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;}
+.field input[type=text],.field textarea{width:100%;background:#FAF7F4;border:0.5px solid #E8D8DC;border-radius:8px;padding:8px 10px;font-size:13px;color:#3D2B35;font-family:inherit;outline:none;transition:border-color .15s;}
+.field input[type=text]:focus,.field textarea:focus{border-color:#C9879A;}
+.field textarea{resize:vertical;min-height:72px;line-height:1.6;}
+.el-section{border:0.5px solid #E8D8DC;border-radius:10px;padding:10px 12px;}
+.el-head{font-size:11px;font-weight:700;color:#8C5568;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.el-head .sel-dot{width:8px;height:8px;border-radius:50%;background:#E8D8DC;flex-shrink:0;}
+.el-head.selected .sel-dot{background:#C9879A;}
+.srow{display:flex;align-items:center;gap:6px;margin-top:4px;}
+.srow-label{font-size:10px;font-weight:700;color:#9B8490;min-width:32px;}
+.srow input[type=range]{flex:1;accent-color:#C9879A;cursor:pointer;}
+.srow-val{font-size:10px;color:#9B8490;min-width:38px;text-align:right;}
+.divider{height:1px;background:#E8D8DC;}
+.upload-btn{width:100%;padding:9px;border-radius:8px;border:1.5px dashed #E8D8DC;background:#FAF7F4;color:#9B8490;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;}
+.upload-btn:hover{border-color:#C9879A;color:#8C5568;background:#FDF0F3;}
+.photo-thumb{width:100%;height:60px;object-fit:cover;border-radius:8px;display:none;margin-top:6px;}
+.clear-link{font-size:11px;color:#C9879A;cursor:pointer;text-decoration:underline;display:none;margin-top:3px;}
+.arrow-palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.arrow-btn{border:1.5px solid #E8D8DC;border-radius:8px;background:#111;cursor:pointer;padding:0;overflow:hidden;transition:border-color .15s;aspect-ratio:1;}
+.arrow-btn:hover{border-color:#C9879A;}
+.arrow-btn canvas{display:block;width:100%;height:100%;}
+.arrow-name{font-size:9px;color:#9B8490;text-align:center;margin-top:3px;}
+.ov-card{border:0.5px solid #E8D8DC;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:5px;}
+.ov-card.selected{border-color:#C9879A;background:#FDF9FA;}
+.ov-head{display:flex;align-items:center;gap:8px;}
+.ov-thumb{width:40px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;}
+.ov-thumb-canvas{width:40px;height:40px;border-radius:6px;flex-shrink:0;background:#111;}
+.ov-name{font-size:11px;color:#6B4F5A;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ov-del{background:none;border:none;color:#D8C0C8;font-size:16px;cursor:pointer;padding:0;line-height:1;}
+.ov-del:hover{color:#C9879A;}
+.color-row{display:flex;align-items:center;gap:6px;margin-top:2px;}
+.color-row label{font-size:10px;font-weight:700;color:#9B8490;text-transform:uppercase;}
+.color-row input[type=color]{width:32px;height:24px;border:none;border-radius:4px;cursor:pointer;padding:0;}
+/* draw tool */
+.draw-box{background:#FAF7F4;border:0.5px solid #E8D8DC;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
+.draw-toggle{width:100%;padding:9px;border-radius:8px;border:1.5px solid #E8D8DC;background:#fff;color:#6B4F5A;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
+.draw-toggle:hover{border-color:#C9879A;color:#8C5568;}
+.draw-toggle.on{background:#C9879A;border-color:#C9879A;color:#fff;}
+.bottom-bar{padding:12px 14px;border-top:1px solid #E8D8DC;flex-shrink:0;}
+.dl-btn{width:100%;padding:11px;border-radius:8px;border:none;background:#C9879A;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;}
+.dl-btn:hover{background:#B5728A;}
+</style>
+</head>
+<body>
+
+<!-- ═══════ STEP 1: 入力 ═══════ -->
+<div id="step1">
+  <div class="s-header">
+    <span style="font-size:17px">📱</span>
+    <span class="s-title">Stories 画像メーカー</span>
+    <div class="step-ind">
+      <div class="s-dot active">1</div><div class="s-line"></div>
+      <div class="s-dot">2</div><div class="s-line"></div>
+      <div class="s-dot">3</div>
+    </div>
+  </div>
+  <div class="s-body">
+    <div class="s-inner">
+      <div class="s-section">
+        <div class="s-sec-title">基本情報</div>
+        <div class="s-field"><label>サービスジャンル</label><input type="text" id="s1-service" placeholder="例：パーソナルトレーニング、英語コーチング"></div>
+        <div class="s-field"><label>ターゲット（見込み客）</label><input type="text" id="s1-target" placeholder="例：30代の働くママ、副業を始めたいサラリーマン"></div>
+      </div>
+      <div class="s-section">
+        <div class="s-sec-title">見込み客の悩み</div>
+        <div class="s-grid3">
+          <div class="s-field"><label>悩み ①</label><input type="text" id="s1-p1" placeholder="主な悩み"></div>
+          <div class="s-field"><label>悩み ②</label><input type="text" id="s1-p2" placeholder="悩み2つ目"></div>
+          <div class="s-field"><label>悩み ③</label><input type="text" id="s1-p3" placeholder="悩み3つ目"></div>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-sec-title">理想の未来</div>
+        <div class="s-grid3">
+          <div class="s-field"><label>理想 ①</label><input type="text" id="s1-i1" placeholder="なりたい状態"></div>
+          <div class="s-field"><label>理想 ②</label><input type="text" id="s1-i2" placeholder="理想2つ目"></div>
+          <div class="s-field"><label>理想 ③</label><input type="text" id="s1-i3" placeholder="理想3つ目"></div>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-sec-title">理想が叶わない理由</div>
+        <div class="s-grid3">
+          <div class="s-field"><label>理由 ①</label><input type="text" id="s1-r1" placeholder="障壁・理由"></div>
+          <div class="s-field"><label>理由 ②</label><input type="text" id="s1-r2" placeholder="理由2つ目"></div>
+          <div class="s-field"><label>理由 ③</label><input type="text" id="s1-r3" placeholder="理由3つ目"></div>
+        </div>
+      </div>
+      <div class="api-box">
+        <div class="api-title">🤖 AI テキスト自動生成（任意）</div>
+        <div class="api-note">Claude API キーを入力するとAIが最適な文章を自動生成します。未入力の場合はテンプレートから生成します。</div>
+        <div class="s-field">
+          <input type="password" id="s1-apikey" placeholder="sk-ant-api03-...">
+          <div class="hint">キーはブラウザ外に送信されません</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="s-footer">
+    <div class="s-footer-inner">
+      <button class="next-btn" id="s1NextBtn" onclick="step1to2()">
+        <span class="lb">次へ：印象を選ぶ →</span><span class="ld">⏳ 生成中...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ STEP 2: 印象選択 ═══════ -->
+<div id="step2">
+  <div class="s-header">
+    <span style="font-size:17px">📱</span>
+    <span class="s-title">Stories 画像メーカー</span>
+    <div class="step-ind">
+      <div class="s-dot done">✓</div><div class="s-line done"></div>
+      <div class="s-dot active">2</div><div class="s-line"></div>
+      <div class="s-dot">3</div>
+    </div>
+    <button class="back-btn" onclick="showStep(1)">← 戻る</button>
+  </div>
+  <div class="s-body">
+    <div class="s-inner">
+      <div class="s-section">
+        <div class="s-sec-title">テキストの印象を選択</div>
+        <div class="theme-cards" id="themeCards"></div>
+      </div>
+      <div class="s-section">
+        <div class="s-sec-title">テキストの色 / 背景</div>
+        <div class="color-options">
+          <div class="color-row2">
+            <label>テキスト色</label>
+            <input type="color" id="s2-textColor" value="#111111">
+            <span style="font-size:11px;color:#9B8490;" id="s2-textColorVal">#111111</span>
+          </div>
+          <div class="color-row2">
+            <label>背景色</label>
+            <input type="color" id="s2-bgColor" value="#ffffff">
+            <span style="font-size:11px;color:#9B8490;" id="s2-bgColorVal">#ffffff</span>
+          </div>
+          <div class="no-bg-row">
+            <input type="checkbox" id="s2-noBg">
+            <label for="s2-noBg">背景なし（テキストのみ表示）</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="s-footer">
+    <div class="s-footer-inner">
+      <button class="next-btn" onclick="showStep(3)">次へ：メーカーへ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ STEP 3: メーカー ═══════ -->
+<div id="step3">
+  <div class="s-header">
+    <span style="font-size:17px">📱</span>
+    <span class="s-title">Stories 画像メーカー</span>
+    <div class="step-ind">
+      <div class="s-dot done">✓</div><div class="s-line done"></div>
+      <div class="s-dot done">✓</div><div class="s-line done"></div>
+      <div class="s-dot active">3</div>
+    </div>
+    <button class="back-btn" onclick="showStep(2)">← 戻る</button>
+  </div>
+
+  <div class="tpl-bar">
+    <div class="bar-label">テンプレートを選択</div>
+    <div class="tpl-list" id="tplList"></div>
+  </div>
+
+  <div class="main">
+    <div class="preview-wrap">
+      <canvas id="preview" class="cur-default" width="1080" height="1920"></canvas>
+      <div class="preview-hint">ドラッグで位置を調整</div>
+      <div class="sel-hint" id="selHint"></div>
+      <div class="draw-active-badge" id="drawBadge">✏️ 描画モード ON</div>
+    </div>
+
+    <div class="controls">
+      <div class="tabs">
+        <div class="tab active" data-tab="text">テキスト</div>
+        <div class="tab" data-tab="bg">背景</div>
+        <div class="tab" data-tab="overlay">装飾</div>
+      </div>
+      <div class="tab-body">
+
+        <!-- テキスト tab -->
+        <div class="tab-pane active" id="pane-text">
+          <div class="el-section" id="sec-h1">
+            <div class="el-head" id="head-h1"><span class="sel-dot"></span>H1 — メイン見出し</div>
+            <div class="field"><input type="text" id="h1" value="収入は上がってないのに"></div>
+            <div class="srow"><span class="srow-label">サイズ</span><input type="range" id="h1s" min="0.4" max="2.5" step="0.05" value="1"><span class="srow-val" id="h1s-v">1.0×</span></div>
+            <div class="srow"><span class="srow-label">角度</span><input type="range" id="h1a" min="-45" max="45" step="0.5" value="0"><span class="srow-val" id="h1a-v">0°</span></div>
+          </div>
+          <div class="el-section" id="sec-h2">
+            <div class="el-head" id="head-h2"><span class="sel-dot"></span>H2 — サブ見出し</div>
+            <div class="field"><input type="text" id="h2" value="物価は上がってく"></div>
+            <div class="srow"><span class="srow-label">サイズ</span><input type="range" id="h2s" min="0.4" max="2.5" step="0.05" value="1"><span class="srow-val" id="h2s-v">1.0×</span></div>
+            <div class="srow"><span class="srow-label">角度</span><input type="range" id="h2a" min="-45" max="45" step="0.5" value="0"><span class="srow-val" id="h2a-v">0°</span></div>
+          </div>
+          <div class="el-section" id="sec-p">
+            <div class="el-head" id="head-p"><span class="sel-dot"></span>P — 本文</div>
+            <div class="field"><textarea id="p">厚生労働省の調査によると、実質賃金は3年連続でマイナスを記録。消費者物価指数は前年比＋3.2%で上昇が続く。家計への圧迫が深刻化しており、政府は対策を検討中とされるが、具体的な支援策はまだ示されていない状況だ。</textarea></div>
+            <div class="srow"><span class="srow-label">サイズ</span><input type="range" id="ps" min="0.4" max="2.5" step="0.05" value="1"><span class="srow-val" id="ps-v">1.0×</span></div>
+            <div class="srow"><span class="srow-label">角度</span><input type="range" id="pa" min="-45" max="45" step="0.5" value="0"><span class="srow-val" id="pa-v">0°</span></div>
+          </div>
+          <div class="el-section" id="sec-h3">
+            <div class="el-head" id="head-h3"><span class="sel-dot"></span>H3 — 強調の一文</div>
+            <div class="field"><input type="text" id="h3" value="今は生きていても、"></div>
+            <div class="srow"><span class="srow-label">サイズ</span><input type="range" id="h3s" min="0.4" max="2.5" step="0.05" value="1"><span class="srow-val" id="h3s-v">1.0×</span></div>
+            <div class="srow"><span class="srow-label">角度</span><input type="range" id="h3a" min="-45" max="45" step="0.5" value="0"><span class="srow-val" id="h3a-v">0°</span></div>
+          </div>
+        </div>
+
+        <!-- 背景 tab -->
+        <div class="tab-pane" id="pane-bg">
+          <input type="file" id="bgInput" accept="image/*" style="display:none">
+          <button class="upload-btn" onclick="document.getElementById('bgInput').click()">＋ 背景写真を選択</button>
+          <img id="bgThumb" class="photo-thumb">
+          <span id="bgClear" class="clear-link" onclick="clearBg()">× 削除</span>
+          <div class="srow"><span class="srow-label">明度</span>    <input type="range" id="bgAlpha" min="0" max="100" value="65"><span class="srow-val" id="bgAlpha-v">65%</span></div>
+          <div class="srow"><span class="srow-label">スケール</span><input type="range" id="bgScale" min="50" max="300" value="100"><span class="srow-val" id="bgScale-v">100%</span></div>
+          <div class="srow"><span class="srow-label">X</span>       <input type="range" id="bgOx" min="-540" max="540" value="0"><span class="srow-val" id="bgOx-v">0</span></div>
+          <div class="srow"><span class="srow-label">Y</span>       <input type="range" id="bgOy" min="-960" max="960" value="0"><span class="srow-val" id="bgOy-v">0</span></div>
+        </div>
+
+        <!-- 装飾 tab -->
+        <div class="tab-pane" id="pane-overlay">
+          <!-- 手描きツール -->
+          <div class="draw-box">
+            <div class="bar-label">手描き・フリー線</div>
+            <button class="draw-toggle" id="drawToggle" onclick="toggleDrawMode()">✏️ 描画モードをON</button>
+            <div class="srow"><span class="srow-label">太さ</span><input type="range" id="drawWidth" min="4" max="80" value="16"><span class="srow-val" id="drawWidth-v">16</span></div>
+            <div class="color-row"><label>色</label><input type="color" id="drawColor" value="#ffffff"></div>
+            <button class="upload-btn" onclick="clearLastDraw()">最後の描画を削除</button>
+          </div>
+          <div class="divider"></div>
+          <!-- 矢印 -->
+          <div class="bar-label">矢印を追加</div>
+          <div class="arrow-palette" id="arrowPalette"></div>
+          <div class="divider"></div>
+          <!-- 画像 -->
+          <input type="file" id="ovInput" accept="image/*" multiple style="display:none">
+          <button class="upload-btn" onclick="document.getElementById('ovInput').click()">＋ オーバーレイ画像を追加</button>
+          <div id="ovList" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+
+      </div>
+      <div class="bottom-bar">
+        <button class="dl-btn" onclick="downloadImage()">↓ PNG でダウンロード</button>
+      </div>
+    </div>
+  </div>
+</div><!-- /step3 -->
+
+<script>
+// ═══════════════════════════════════════════
+//  Canvas constants
+// ═══════════════════════════════════════════
+const CW = 1080, CH = 1920, TPAD = 20;
+const TW = 108, TH = 192;
+
+// ═══════════════════════════════════════════
+//  Themes
+// ═══════════════════════════════════════════
+const THEMES = {
+  simple: {
+    name:'シンプル', desc:'Hiragino 角ゴシック',
+    font:'"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDGothic","Yu Gothic",sans-serif',
+    radius:0,
+  },
+  cute: {
+    name:'かわいい', desc:'丸ゴシック',
+    font:'"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","BIZ UDPGothic",sans-serif',
+    radius:10,
+  },
+  calm: {
+    name:'落ち着き', desc:'メイリオ',
+    font:'"Meiryo","Meiryo UI","BIZ UDGothic","Yu Gothic",sans-serif',
+    radius:4,
+  },
+};
+
+// ═══════════════════════════════════════════
+//  Templates
+// ═══════════════════════════════════════════
+const TEMPLATES = [
+  { name:'スタンダード', els:[
+    {t:'h1',x:60,  y:200, s:86,w:'900',a:'left',  mw:960},
+    {t:'h2',x:60,  y:328, s:60,w:'700',a:'left',  mw:960},
+    {t:'p', x:60,  y:440, s:40,w:'400',a:'left',  mw:960,lh:68},
+    {t:'h3',x:60,  y:856, s:56,w:'700',a:'left',  mw:960},
+  ]},
+  { name:'トップ集中', els:[
+    {t:'h1',x:60,  y:180, s:96,w:'900',a:'left',  mw:960},
+    {t:'h2',x:60,  y:320, s:56,w:'700',a:'left',  mw:960},
+    {t:'p', x:60,  y:420, s:38,w:'400',a:'left',  mw:960,lh:62},
+    {t:'h3',x:60,  y:740, s:54,w:'900',a:'left',  mw:960},
+  ]},
+  { name:'ボトム強調', els:[
+    {t:'h1',x:60,  y:180, s:92,w:'900',a:'left',  mw:960},
+    {t:'h2',x:60,  y:1180,s:56,w:'700',a:'left',  mw:960},
+    {t:'p', x:60,  y:1290,s:38,w:'400',a:'left',  mw:960,lh:62},
+    {t:'h3',x:60,  y:1680,s:76,w:'900',a:'left',  mw:960},
+  ]},
+  { name:'センター', els:[
+    {t:'h1',x:540, y:620, s:86,w:'900',a:'center',mw:960},
+    {t:'h2',x:540, y:748, s:58,w:'700',a:'center',mw:960},
+    {t:'p', x:540, y:860, s:38,w:'400',a:'center',mw:900,lh:64},
+    {t:'h3',x:540, y:1268,s:56,w:'700',a:'center',mw:960},
+  ]},
+  { name:'スプリット', els:[
+    {t:'h1',x:60,  y:180, s:96,w:'900',a:'left',  mw:960},
+    {t:'h2',x:60,  y:326, s:60,w:'700',a:'left',  mw:960},
+    {t:'p', x:60,  y:1060,s:40,w:'400',a:'left',  mw:960,lh:66},
+    {t:'h3',x:60,  y:1700,s:82,w:'900',a:'left',  mw:960},
+  ]},
+];
+
+// ═══════════════════════════════════════════
+//  Arrow defs
+// ═══════════════════════════════════════════
+const ARROW_DEFS = [
+  {name:'直線 →'},{name:'両矢印 ↔'},{name:'ブロック ▶'},{name:'カーブ ↩'},{name:'上向き ↑'},
+];
+function drawArrowShape(ctx, idx, size, color) {
+  const s=size/2;
+  ctx.save(); ctx.strokeStyle=color; ctx.fillStyle=color;
+  ctx.lineWidth=Math.max(2,size*.1); ctx.lineCap='round'; ctx.lineJoin='round';
+  switch(idx){
+    case 0: ctx.beginPath();ctx.moveTo(-s*.8,0);ctx.lineTo(s*.35,0);ctx.stroke();
+            ctx.beginPath();ctx.moveTo(s,0);ctx.lineTo(s*.3,-s*.4);ctx.lineTo(s*.3,s*.4);ctx.closePath();ctx.fill();break;
+    case 1: ctx.beginPath();ctx.moveTo(-s*.3,0);ctx.lineTo(s*.3,0);ctx.stroke();
+            ctx.beginPath();ctx.moveTo(s,0);ctx.lineTo(s*.3,-s*.4);ctx.lineTo(s*.3,s*.4);ctx.closePath();ctx.fill();
+            ctx.beginPath();ctx.moveTo(-s,0);ctx.lineTo(-s*.3,-s*.4);ctx.lineTo(-s*.3,s*.4);ctx.closePath();ctx.fill();break;
+    case 2: ctx.beginPath();ctx.moveTo(-s*.9,-s*.35);ctx.lineTo(s*.1,-s*.35);ctx.lineTo(s*.1,-s*.65);ctx.lineTo(s*.9,0);ctx.lineTo(s*.1,s*.65);ctx.lineTo(s*.1,s*.35);ctx.lineTo(-s*.9,s*.35);ctx.closePath();ctx.fill();break;
+    case 3: ctx.beginPath();ctx.moveTo(s*.8,-s*.2);ctx.bezierCurveTo(s*.8,s*.6,-s*.8,s*.6,-s*.8,0);ctx.stroke();
+            ctx.beginPath();ctx.moveTo(-s*.8,0);ctx.lineTo(-s*.3,-s*.4);ctx.lineTo(-s*.2,s*.15);ctx.closePath();ctx.fill();break;
+    case 4: ctx.beginPath();ctx.moveTo(0,s*.8);ctx.lineTo(0,-s*.3);ctx.stroke();
+            ctx.beginPath();ctx.moveTo(0,-s);ctx.lineTo(-s*.4,-s*.3);ctx.lineTo(s*.4,-s*.3);ctx.closePath();ctx.fill();break;
+  }
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  State
+// ═══════════════════════════════════════════
+const state = {
+  tplIdx: 0,
+  themeKey: 'simple',
+  themeColor: { text:'#111111', bg:'#ffffff', noBg:false },
+  elProps: {
+    h1:{x:0,y:0,angle:0}, h2:{x:0,y:0,angle:0},
+    p: {x:0,y:0,angle:0}, h3:{x:0,y:0,angle:0},
+  },
+  elScale: { h1:1, h2:1, p:1, h3:1 },
+  bg: { img:null, alpha:0.65, scale:1, ox:0, oy:0 },
+  overlays: [],
+  ovNextId: 0,
+  selected: null,
+  drawMode: false,
+  drawSettings: { color:'#ffffff', lineWidth:16 },
+  currentPath: null,
+};
+let hitAreas = [];
+
+function getTheme() {
+  const t = THEMES[state.themeKey];
+  return { ...t, textColor: state.themeColor.text, bgColor: state.themeColor.bg, noBg: state.themeColor.noBg };
+}
+
+// ═══════════════════════════════════════════
+//  Drawing helpers
+// ═══════════════════════════════════════════
+const measureCtx = document.createElement('canvas').getContext('2d');
+
+function roundRect(ctx, x, y, w, h, r) {
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+function wrapText(text, maxW, font) {
+  measureCtx.font = font;
+  const lines=[]; let line='';
+  for (const ch of text) {
+    const t=line+ch;
+    if (measureCtx.measureText(t).width>maxW && line){lines.push(line);line=ch;}
+    else line=t;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+// Single-line text with background
+function drawLine(ctx, text, el, absX, absY, angle, theme, fontSize) {
+  if (!text) return null;
+  const font = `${el.w} ${fontSize}px ${theme.font}`;
+  ctx.font=font; ctx.textBaseline='top';
+  const tw = ctx.measureText(text).width;
+  const bx = el.a==='center' ? absX-tw/2 : absX;
+  const cx=bx+tw/2, cy=absY+fontSize/2;
+
+  if (!theme.noBg) {
+    ctx.save();
+    if (angle){ctx.translate(cx,cy);ctx.rotate(angle*Math.PI/180);ctx.translate(-cx,-cy);}
+    roundRect(ctx,bx-TPAD,absY-TPAD,tw+TPAD*2,fontSize+TPAD*2,theme.radius);
+    ctx.fillStyle=theme.bgColor; ctx.fill();
+    ctx.restore();
+  }
+  ctx.save();
+  if (angle){ctx.translate(cx,cy);ctx.rotate(angle*Math.PI/180);ctx.translate(-cx,-cy);}
+  ctx.font=font; ctx.fillStyle=theme.textColor; ctx.textAlign=el.a; ctx.textBaseline='top';
+  ctx.fillText(text,absX,absY);
+  ctx.restore();
+  return {x:bx-TPAD,y:absY-TPAD,w:tw+TPAD*2,h:fontSize+TPAD*2,cx,cy};
+}
+
+// Multi-line paragraph — ONE background rect for entire block
+function drawPara(ctx, text, el, absX, absY, angle, theme, scale) {
+  if (!text) return null;
+  const fontSize = Math.round(el.s*scale);
+  const lh = Math.round(el.lh*scale);
+  const font = `${el.w} ${fontSize}px ${theme.font}`;
+  const lines = wrapText(text, el.mw, font);
+  let maxW=0;
+  measureCtx.font=font;
+  lines.forEach(l=>{maxW=Math.max(maxW,measureCtx.measureText(l).width);});
+  const totalH = (lines.length-1)*lh + fontSize;
+  const bx = el.a==='center' ? absX-maxW/2 : absX;
+  const bcx=bx+maxW/2, bcy=absY+totalH/2;
+
+  // Single background rect
+  if (!theme.noBg) {
+    ctx.save();
+    if (angle){ctx.translate(bcx,bcy);ctx.rotate(angle*Math.PI/180);ctx.translate(-bcx,-bcy);}
+    roundRect(ctx,bx-TPAD,absY-TPAD,maxW+TPAD*2,totalH+TPAD*2,theme.radius);
+    ctx.fillStyle=theme.bgColor; ctx.fill();
+    ctx.restore();
+  }
+  // Draw each text line
+  lines.forEach((line,i)=>{
+    const y=absY+i*lh;
+    ctx.save();
+    if (angle){ctx.translate(bcx,bcy);ctx.rotate(angle*Math.PI/180);ctx.translate(-bcx,-bcy);}
+    ctx.font=font; ctx.fillStyle=theme.textColor; ctx.textAlign=el.a; ctx.textBaseline='top';
+    ctx.fillText(line,absX,y);
+    ctx.restore();
+  });
+  return {x:bx-TPAD,y:absY-TPAD,w:maxW+TPAD*2,h:totalH+TPAD*2,cx:bcx,cy:bcy};
+}
+
+function drawSelBox(ctx, b, angle) {
+  ctx.save();
+  ctx.translate(b.cx,b.cy); ctx.rotate(angle*Math.PI/180);
+  ctx.strokeStyle='#C9879A'; ctx.lineWidth=5;
+  ctx.setLineDash([18,9]);
+  ctx.strokeRect(-b.w/2-8,-b.h/2-8,b.w+16,b.h+16);
+  ctx.setLineDash([]); ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  Render
+// ═══════════════════════════════════════════
+function render(canvas) {
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,CW,CH);
+  hitAreas=[];
+
+  ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,CW,CH);
+
+  // BG image
+  const bg=state.bg;
+  if (bg.img) {
+    const ir=bg.img.naturalWidth/bg.img.naturalHeight, cr=CW/CH;
+    let dw,dh,dx,dy;
+    if(ir>cr){dh=CH*bg.scale;dw=dh*ir;}else{dw=CW*bg.scale;dh=dw/ir;}
+    dx=(CW-dw)/2+bg.ox; dy=(CH-dh)/2+bg.oy;
+    ctx.save(); ctx.globalAlpha=bg.alpha; ctx.drawImage(bg.img,dx,dy,dw,dh); ctx.restore();
+  }
+
+  // Overlays (images, arrows, draw paths)
+  for (const ov of state.overlays) {
+    if (ov.type==='draw') {
+      if (ov.points.length<2) continue;
+      ctx.save(); ctx.strokeStyle=ov.color; ctx.lineWidth=ov.lineWidth;
+      ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath();
+      ov.points.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.stroke(); ctx.restore();
+      continue;
+    }
+    let ow,oh;
+    ctx.save(); ctx.translate(ov.x,ov.y); ctx.rotate(ov.angle*Math.PI/180);
+    if (ov.type==='image'&&ov.img) {
+      ow=ov.img.naturalWidth*ov.scale; oh=ov.img.naturalHeight*ov.scale;
+      ctx.drawImage(ov.img,-ow/2,-oh/2,ow,oh);
+    } else if (ov.type==='arrow') {
+      const sz=220*ov.scale; ow=oh=sz;
+      drawArrowShape(ctx,ov.arrowIdx,sz,ov.color);
+    }
+    ctx.restore();
+    if (ow&&oh) hitAreas.push({kind:'overlay',id:ov.id,cx:ov.x,cy:ov.y,w:ow,h:oh,angle:ov.angle});
+  }
+
+  // Current draw path (in-progress)
+  if (state.currentPath&&state.currentPath.points.length>1) {
+    const cp=state.currentPath;
+    ctx.save(); ctx.strokeStyle=cp.color; ctx.lineWidth=cp.lineWidth;
+    ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath();
+    cp.points.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+    ctx.stroke(); ctx.restore();
+  }
+
+  // Text elements
+  const theme=getTheme();
+  const tpl=TEMPLATES[state.tplIdx];
+  const texts=getTexts();
+  for (const el of tpl.els) {
+    const txt=texts[el.t]; if(!txt) continue;
+    const p=state.elProps[el.t];
+    const sc=state.elScale[el.t]||1;
+    const fs=Math.round(el.s*sc);
+    let b;
+    if (el.t==='p') b=drawPara(ctx,txt,el,p.x,p.y,p.angle,theme,sc);
+    else            b=drawLine(ctx,txt,el,p.x,p.y,p.angle,theme,fs);
+    if (b) hitAreas.push({kind:'text',key:el.t,cx:b.cx,cy:b.cy,w:b.w,h:b.h,angle:p.angle});
+  }
+
+  // Selection box
+  if (state.selected) {
+    const h=hitAreas.find(h=>h.kind===state.selected.kind&&(h.key===state.selected.key||h.id===state.selected.id));
+    if (h) drawSelBox(ctx,h,h.angle);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  Hit test
+// ═══════════════════════════════════════════
+function hitTest(cx,cy,w,h,angle,px,py) {
+  const cos=Math.cos(-angle*Math.PI/180), sin=Math.sin(-angle*Math.PI/180);
+  const dx=px-cx,dy=py-cy;
+  const lx=dx*cos-dy*sin, ly=dx*sin+dy*cos;
+  return Math.abs(lx)<=w/2+10&&Math.abs(ly)<=h/2+10;
+}
+function findHit(px,py) {
+  for (let i=hitAreas.length-1;i>=0;i--) {
+    const h=hitAreas[i];
+    if(hitTest(h.cx,h.cy,h.w,h.h,h.angle,px,py)) return h;
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════
+//  Canvas events (drag + draw mode)
+// ═══════════════════════════════════════════
+const cv=document.getElementById('preview');
+const drag={active:false,item:null,startX:0,startY:0,isx:0,isy:0,moved:false};
+
+function cvXY(e) {
+  const rect=cv.getBoundingClientRect();
+  const src=e.touches?e.touches[0]:e;
+  return {x:(src.clientX-rect.left)*(CW/rect.width),y:(src.clientY-rect.top)*(CH/rect.height)};
+}
+function getItemPos(item) {
+  if(item.kind==='text') return{...state.elProps[item.key]};
+  const ov=state.overlays.find(o=>o.id===item.id);
+  return ov?{x:ov.x,y:ov.y}:null;
+}
+function setItemPos(item,x,y) {
+  if(item.kind==='text'){state.elProps[item.key].x=Math.round(x);state.elProps[item.key].y=Math.round(y);}
+  else{const ov=state.overlays.find(o=>o.id===item.id);if(ov){ov.x=Math.round(x);ov.y=Math.round(y);}}
+}
+
+cv.addEventListener('mousedown', onDown,{passive:false});
+cv.addEventListener('mousemove', onMove,{passive:false});
+cv.addEventListener('mouseup',   onUp);
+cv.addEventListener('touchstart',onDown,{passive:false});
+cv.addEventListener('touchmove', onMove,{passive:false});
+cv.addEventListener('touchend',  onUp);
+
+function onDown(e) {
+  e.preventDefault();
+  const {x,y}=cvXY(e);
+  if (state.drawMode) {
+    state.currentPath={id:state.ovNextId++,type:'draw',points:[{x,y}],
+      color:state.drawSettings.color,lineWidth:state.drawSettings.lineWidth};
+    return;
+  }
+  const hit=findHit(x,y);
+  if (hit) {
+    state.selected=hit.kind==='text'?{kind:'text',key:hit.key}:{kind:'overlay',id:hit.id};
+    const pos=getItemPos(state.selected);
+    drag.active=true;drag.item=state.selected;drag.moved=false;
+    drag.startX=x;drag.startY=y;drag.isx=pos.x;drag.isy=pos.y;
+    cv.className='cur-drag';
+  } else {
+    state.selected=null;
+  }
+  updateSelUI(); render(cv);
+}
+function onMove(e) {
+  e.preventDefault();
+  const {x,y}=cvXY(e);
+  if (state.drawMode&&state.currentPath) {
+    state.currentPath.points.push({x,y});
+    render(cv); return;
+  }
+  if (drag.active&&drag.item) {
+    const dx=x-drag.startX,dy=y-drag.startY;
+    if(Math.abs(dx)>3||Math.abs(dy)>3) drag.moved=true;
+    setItemPos(drag.item,drag.isx+dx,drag.isy+dy);
+    render(cv);
+  } else if (!state.drawMode) {
+    cv.className=findHit(x,y)?'cur-hover':'cur-default';
+  }
+}
+function onUp(e) {
+  if (state.drawMode&&state.currentPath) {
+    if (state.currentPath.points.length>2) {
+      state.overlays.push(state.currentPath);
+      renderOverlayList();
+    }
+    state.currentPath=null; update(false); return;
+  }
+  if (drag.active) {
+    cv.className='cur-default'; drag.active=false;
+    if (drag.moved) renderOverlayList();
+    update(false);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  Draw mode toggle
+// ═══════════════════════════════════════════
+function toggleDrawMode() {
+  state.drawMode=!state.drawMode;
+  const btn=document.getElementById('drawToggle');
+  const badge=document.getElementById('drawBadge');
+  btn.className='draw-toggle'+(state.drawMode?' on':'');
+  btn.textContent=state.drawMode?'✏️ 描画モードをOFF':'✏️ 描画モードをON';
+  badge.style.display=state.drawMode?'block':'none';
+  cv.className=state.drawMode?'cur-draw':'cur-default';
+  state.selected=null; updateSelUI(); render(cv);
+}
+function clearLastDraw() {
+  for (let i=state.overlays.length-1;i>=0;i--) {
+    if(state.overlays[i].type==='draw'){state.overlays.splice(i,1);break;}
+  }
+  renderOverlayList(); update(false);
+}
+document.getElementById('drawWidth').addEventListener('input',e=>{
+  state.drawSettings.lineWidth=parseInt(e.target.value);
+  document.getElementById('drawWidth-v').textContent=e.target.value;
+});
+document.getElementById('drawColor').addEventListener('input',e=>{
+  state.drawSettings.color=e.target.value;
+});
+
+// ═══════════════════════════════════════════
+//  Selection UI
+// ═══════════════════════════════════════════
+function updateSelUI() {
+  ['h1','h2','p','h3'].forEach(k=>document.getElementById('head-'+k)?.classList.remove('selected'));
+  const hint=document.getElementById('selHint');
+  if(!state.selected){hint.style.display='none';return;}
+  if(state.selected.kind==='text'){
+    document.getElementById('head-'+state.selected.key)?.classList.add('selected');
+    hint.style.display='block';hint.textContent='選択中: '+state.selected.key.toUpperCase();
+  } else {
+    hint.style.display='block';
+    const ov=state.overlays.find(o=>o.id===state.selected.id);
+    hint.textContent='選択中: '+(ov?.type==='arrow'?'矢印':ov?.type==='draw'?'手描き':'画像');
+  }
+  document.querySelectorAll('.ov-card').forEach(c=>c.classList.remove('selected'));
+  if(state.selected.kind==='overlay') document.getElementById('ov-'+state.selected.id)?.classList.add('selected');
+}
+
+// ═══════════════════════════════════════════
+//  Arrow palette
+// ═══════════════════════════════════════════
+function buildArrowPalette() {
+  const pal=document.getElementById('arrowPalette'); pal.innerHTML='';
+  ARROW_DEFS.forEach((def,i)=>{
+    const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;align-items:center;';
+    const btn=document.createElement('button'); btn.className='arrow-btn';
+    const c=document.createElement('canvas'); c.width=80;c.height=80;
+    const ctx=c.getContext('2d'); ctx.fillStyle='#111'; ctx.fillRect(0,0,80,80);
+    ctx.save();ctx.translate(40,40);drawArrowShape(ctx,i,56,'white');ctx.restore();
+    btn.appendChild(c); btn.onclick=()=>addArrow(i);
+    const nm=document.createElement('div'); nm.className='arrow-name'; nm.textContent=def.name;
+    wrap.append(btn,nm); pal.appendChild(wrap);
+  });
+}
+function addArrow(idx) {
+  const ov={id:state.ovNextId++,type:'arrow',arrowIdx:idx,x:CW/2,y:CH/2,scale:1,angle:0,color:'#ffffff'};
+  state.overlays.push(ov);
+  state.selected={kind:'overlay',id:ov.id};
+  renderOverlayList(); updateSelUI(); update();
+}
+
+// ═══════════════════════════════════════════
+//  Overlay list
+// ═══════════════════════════════════════════
+function renderOverlayList() {
+  const list=document.getElementById('ovList'); list.innerHTML='';
+  state.overlays.forEach(ov=>{
+    if(ov.type==='draw') {
+      const card=document.createElement('div'); card.className='ov-card'; card.id='ov-'+ov.id;
+      const head=document.createElement('div'); head.className='ov-head';
+      const nm=document.createElement('span'); nm.className='ov-name'; nm.textContent='手描き';
+      const del=document.createElement('button'); del.className='ov-del'; del.textContent='×';
+      del.onclick=()=>{state.overlays=state.overlays.filter(o=>o.id!==ov.id);if(state.selected?.id===ov.id)state.selected=null;renderOverlayList();updateSelUI();update();};
+      head.append(nm,del); card.appendChild(head); list.appendChild(card); return;
+    }
+    const card=document.createElement('div'); card.className='ov-card'; card.id='ov-'+ov.id;
+    if(state.selected?.kind==='overlay'&&state.selected.id===ov.id) card.classList.add('selected');
+    const head=document.createElement('div'); head.className='ov-head';
+    if(ov.type==='image'){const th=document.createElement('img');th.src=ov.url;th.className='ov-thumb';head.appendChild(th);}
+    else{const tc=document.createElement('canvas');tc.className='ov-thumb-canvas';tc.width=80;tc.height=80;const tctx=tc.getContext('2d');tctx.fillStyle='#111';tctx.fillRect(0,0,80,80);tctx.save();tctx.translate(40,40);drawArrowShape(tctx,ov.arrowIdx,56,ov.color);tctx.restore();head.appendChild(tc);}
+    const nm=document.createElement('span'); nm.className='ov-name'; nm.textContent=ov.type==='arrow'?`矢印 (${ARROW_DEFS[ov.arrowIdx].name})`:`画像 ${ov.id+1}`;
+    const del=document.createElement('button'); del.className='ov-del'; del.textContent='×';
+    del.onclick=()=>{state.overlays=state.overlays.filter(o=>o.id!==ov.id);if(state.selected?.id===ov.id)state.selected=null;renderOverlayList();updateSelUI();update();};
+    head.append(nm,del); card.appendChild(head);
+    if(ov.type==='arrow'){const cr=document.createElement('div');cr.className='color-row';const cl=document.createElement('label');cl.textContent='色';const ci=document.createElement('input');ci.type='color';ci.value=ov.color;ci.oninput=()=>{ov.color=ci.value;renderOverlayList();update(false);};cr.append(cl,ci);card.appendChild(cr);}
+    const sliders=ov.type==='arrow'
+      ?[{label:'スケール',prop:'scale',min:.1,max:5,step:.05,fmt:v=>(+v).toFixed(2)+'×'},{label:'角度',prop:'angle',min:-180,max:180,step:1,fmt:v=>v+'°'}]
+      :[{label:'スケール',prop:'scale',min:.05,max:3,step:.01,fmt:v=>(+v).toFixed(2)+'×'},{label:'角度',prop:'angle',min:-180,max:180,step:1,fmt:v=>v+'°'}];
+    sliders.forEach(({label,prop,min,max,step,fmt})=>{
+      const row=document.createElement('div');row.className='srow';
+      const lbl=document.createElement('span');lbl.className='srow-label';lbl.textContent=label;
+      const inp=document.createElement('input');inp.type='range';inp.min=min;inp.max=max;inp.step=step;inp.value=ov[prop];inp.style.cssText='flex:1;accent-color:#C9879A;cursor:pointer;';
+      const val=document.createElement('span');val.className='srow-val';val.textContent=fmt(ov[prop]);
+      inp.oninput=()=>{ov[prop]=parseFloat(inp.value);val.textContent=fmt(inp.value);renderOverlayList();update(false);};
+      row.append(lbl,inp,val);card.appendChild(row);
+    });
+    card.addEventListener('mousedown',()=>{state.selected={kind:'overlay',id:ov.id};updateSelUI();render(cv);});
+    list.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  BG upload
+// ═══════════════════════════════════════════
+document.getElementById('bgInput').addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+  img.onload=()=>{state.bg.img=img;document.getElementById('bgThumb').src=url;document.getElementById('bgThumb').style.display='block';document.getElementById('bgClear').style.display='block';update();};
+  img.src=url;
+});
+function clearBg(){state.bg.img=null;document.getElementById('bgInput').value='';document.getElementById('bgThumb').style.display='none';document.getElementById('bgClear').style.display='none';update();}
+
+// ═══════════════════════════════════════════
+//  Overlay image upload
+// ═══════════════════════════════════════════
+document.getElementById('ovInput').addEventListener('change',e=>{
+  Array.from(e.target.files).forEach(file=>{
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{const ov={id:state.ovNextId++,type:'image',img,url,x:CW/2,y:CH/2,scale:Math.min(1,600/Math.max(img.naturalWidth,img.naturalHeight)),angle:0};state.overlays.push(ov);state.selected={kind:'overlay',id:ov.id};renderOverlayList();updateSelUI();update();};
+    img.src=url;
+  });e.target.value='';
+});
+
+// ═══════════════════════════════════════════
+//  Sliders (BG + text scale/angle)
+// ═══════════════════════════════════════════
+function updateLabel(inp) {
+  const id=inp.id;const v=parseFloat(inp.value);const el=document.getElementById(id+'-v');if(!el)return;
+  if(id.endsWith('a')) el.textContent=v.toFixed(1)+'°';
+  else if(id.endsWith('s')) el.textContent=v.toFixed(2)+'×';
+  else if(id==='bgAlpha'||id==='bgScale') el.textContent=v+'%';
+  else el.textContent=v;
+}
+['h1','h2','p','h3'].forEach(k=>{
+  document.getElementById(k+'s')?.addEventListener('input',e=>{updateLabel(e.target);state.elScale[k]=parseFloat(e.target.value);update(false);});
+  document.getElementById(k+'a')?.addEventListener('input',e=>{updateLabel(e.target);state.elProps[k].angle=parseFloat(e.target.value);update(false);});
+  document.getElementById(k)?.addEventListener('input',()=>update());
+});
+['bgAlpha','bgScale','bgOx','bgOy'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',e=>{
+    updateLabel(e.target);const v=parseFloat(e.target.value);
+    if(id==='bgAlpha')state.bg.alpha=v/100;
+    if(id==='bgScale')state.bg.scale=v/100;
+    if(id==='bgOx')state.bg.ox=v;
+    if(id==='bgOy')state.bg.oy=v;
+    update();
+  });
+});
+
+// ═══════════════════════════════════════════
+//  Tabs
+// ═══════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('pane-'+tab.dataset.tab)?.classList.add('active');
+  });
+});
+
+// ═══════════════════════════════════════════
+//  Template select
+// ═══════════════════════════════════════════
+function selectTemplate(idx) {
+  state.tplIdx=idx;
+  TEMPLATES[idx].els.forEach(el=>{state.elProps[el.t]={x:el.x,y:el.y,angle:0};state.elScale[el.t]=1;});
+  ['h1s','h2s','ps','h3s','h1a','h2a','pa','h3a'].forEach(id=>{const el=document.getElementById(id);if(el){el.value=id.endsWith('s')?1:0;updateLabel(el);}});
+  state.selected=null;updateSelUI();update();
+}
+
+// ═══════════════════════════════════════════
+//  Thumbnails
+// ═══════════════════════════════════════════
+let thumbTimer;
+function buildThumbs() {
+  const list=document.getElementById('tplList');list.innerHTML='';
+  const theme=getTheme();const texts=getTexts();
+  TEMPLATES.forEach((tpl,i)=>{
+    const full=Object.assign(document.createElement('canvas'),{width:CW,height:CH});
+    const fctx=full.getContext('2d');fctx.fillStyle='#0a0a0a';fctx.fillRect(0,0,CW,CH);
+    for(const el of tpl.els){const txt=texts[el.t];if(!txt)continue;
+      if(el.t==='p')drawPara(fctx,txt,el,el.x,el.y,0,theme,1);
+      else drawLine(fctx,txt,el,el.x,el.y,0,theme,el.s);}
+    const tc=Object.assign(document.createElement('canvas'),{width:TW,height:TH});
+    tc.className='tpl-canvas';tc.style.cssText=`width:${TW}px;height:${TH}px;`;
+    tc.getContext('2d').drawImage(full,0,0,TW,TH);
+    const item=document.createElement('div');item.className='tpl-item'+(i===state.tplIdx?' active':'');
+    item.onclick=()=>selectTemplate(i);
+    const nm=document.createElement('div');nm.className='tpl-name';nm.textContent=tpl.name;
+    item.append(tc,nm);list.appendChild(item);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  Texts getter
+// ═══════════════════════════════════════════
+function getTexts(){
+  return{h1:document.getElementById('h1').value,h2:document.getElementById('h2').value,
+         p:document.getElementById('p').value,h3:document.getElementById('h3').value};
+}
+function update(schedThumb=true){
+  render(cv);
+  if(schedThumb){clearTimeout(thumbTimer);thumbTimer=setTimeout(buildThumbs,300);}
+}
+function downloadImage(){
+  const c=Object.assign(document.createElement('canvas'),{width:CW,height:CH});
+  const sv=state.selected;state.selected=null;render(c);state.selected=sv;
+  const a=document.createElement('a');a.download='story.png';a.href=c.toDataURL('image/png');a.click();
+}
+
+// ═══════════════════════════════════════════
+//  Step navigation
+// ═══════════════════════════════════════════
+function showStep(n) {
+  document.getElementById('step1').style.display='none';
+  document.getElementById('step2').style.display='none';
+  document.getElementById('step3').style.display='none';
+  document.getElementById('step'+n).style.display='flex';
+  if(n===3) update();
+}
+
+async function step1to2() {
+  const inp={
+    service:document.getElementById('s1-service').value.trim(),
+    target: document.getElementById('s1-target').value.trim(),
+    p1:document.getElementById('s1-p1').value.trim(),p2:document.getElementById('s1-p2').value.trim(),p3:document.getElementById('s1-p3').value.trim(),
+    i1:document.getElementById('s1-i1').value.trim(),i2:document.getElementById('s1-i2').value.trim(),i3:document.getElementById('s1-i3').value.trim(),
+    r1:document.getElementById('s1-r1').value.trim(),r2:document.getElementById('s1-r2').value.trim(),r3:document.getElementById('s1-r3').value.trim(),
+  };
+  if(!inp.service&&!inp.target&&!inp.p1){alert('サービスジャンルかターゲット、悩みを入力してください');return;}
+  const apiKey=document.getElementById('s1-apikey').value.trim();
+  const btn=document.getElementById('s1NextBtn');
+  btn.classList.add('loading');btn.disabled=true;
+  let texts;
+  try {
+    texts=apiKey?await generateWithAI(inp,apiKey):generateFromTemplate(inp);
+  } catch(e) {
+    console.error(e);alert('AI生成エラー。テンプレートで生成します。\n'+e.message);
+    texts=generateFromTemplate(inp);
+  } finally {btn.classList.remove('loading');btn.disabled=false;}
+  document.getElementById('h1').value=texts.h1||'';
+  document.getElementById('h2').value=texts.h2||'';
+  document.getElementById('p').value= texts.p ||'';
+  document.getElementById('h3').value=texts.h3||'';
+  showStep(2);
+}
+
+// ── Template text generation ──
+function generateFromTemplate(inp) {
+  const probs=[inp.p1,inp.p2,inp.p3].filter(Boolean);
+  const ideals=[inp.i1,inp.i2,inp.i3].filter(Boolean);
+  const reasons=[inp.r1,inp.r2,inp.r3].filter(Boolean);
+  const h1=probs[0]||`${inp.target}が直面する現実`;
+  const h2=probs[1]||(inp.service?`${inp.service}で変われる`:'解決策がある');
+  const pLines=[];
+  if(probs[0])pLines.push(`「${probs[0]}」`);
+  if(probs[1])pLines.push(`「${probs[1]}」`);
+  pLines.push('そんな悩みを抱えていませんか？');
+  if(reasons[0])pLines.push(`${reasons[0]}という壁が立ちはだかり、一歩を踏み出せない${inp.target||'方'}も多いはずです。`);
+  if(ideals[0])pLines.push(`でも本当は「${ideals[0]}」を実現したいはずです。`);
+  return{h1,h2,p:pLines.join('\n'),h3:ideals[0]||'理想の未来へ踏み出そう'};
+}
+
+// ── AI generation ──
+async function generateWithAI(inp,apiKey) {
+  const prompt=`あなたはSNSストーリーズのコピーライターです。
+以下をもとにInstagram Stories用の日本語テキストを生成してください。
+
+サービスジャンル: ${inp.service||'未入力'}
+ターゲット: ${inp.target||'未入力'}
+見込み客の悩み: ${[inp.p1,inp.p2,inp.p3].filter(Boolean).join('、')||'未入力'}
+理想の未来: ${[inp.i1,inp.i2,inp.i3].filter(Boolean).join('、')||'未入力'}
+理想が叶わない理由: ${[inp.r1,inp.r2,inp.r3].filter(Boolean).join('、')||'未入力'}
+
+以下のJSONのみで返答（コードブロック不要）:
+{"h1":"強烈な共感見出し（25文字以内）","h2":"サブ見出し（20文字以内）","p":"本文（共感→問題→示唆の流れ、4〜5文、改行なし）","h3":"締めの一言（15文字以内）"}`;
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'x-api-key':apiKey,'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,messages:[{role:'user',content:prompt}]}),
+  });
+  if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err?.error?.message||`API error ${res.status}`);}
+  const data=await res.json();
+  const raw=data.content?.[0]?.text||'{}';
+  return JSON.parse(raw.replace(/```[a-z]*\n?/g,'').replace(/```/g,'').trim());
+}
+
+// ═══════════════════════════════════════════
+//  Step 2: Theme cards
+// ═══════════════════════════════════════════
+function buildThemeCards() {
+  const container=document.getElementById('themeCards');container.innerHTML='';
+  Object.entries(THEMES).forEach(([key,theme])=>{
+    const card=document.createElement('div');
+    card.className='theme-card'+(state.themeKey===key?' active':'');
+    card.onclick=()=>{state.themeKey=key;buildThemeCards();};
+    // Preview canvas
+    const c=document.createElement('canvas');c.width=216;c.height=120;
+    const ctx=c.getContext('2d');ctx.fillStyle='#111';ctx.fillRect(0,0,216,120);
+    const previewTheme={...theme,textColor:'#111',bgColor:'#fff',noBg:false};
+    const el={t:'h1',a:'left',w:'700',s:22,mw:180};
+    drawLine(ctx,'見出しの見本',el,10,12,0,previewTheme,22);
+    const el2={t:'p',a:'left',w:'400',s:13,mw:196,lh:20};
+    drawPara(ctx,'本文テキストの\nサンプルです',el2,10,56,0,previewTheme,1);
+    card.appendChild(c);
+    const nm=document.createElement('div');nm.className='theme-card-name';nm.textContent=theme.name;
+    const desc=document.createElement('div');desc.className='theme-card-desc';desc.textContent=theme.desc;
+    card.append(nm,desc);container.appendChild(card);
+  });
+}
+
+// Color pickers in step 2
+document.getElementById('s2-textColor').addEventListener('input',e=>{
+  state.themeColor.text=e.target.value;document.getElementById('s2-textColorVal').textContent=e.target.value;buildThemeCards();
+});
+document.getElementById('s2-bgColor').addEventListener('input',e=>{
+  state.themeColor.bg=e.target.value;document.getElementById('s2-bgColorVal').textContent=e.target.value;buildThemeCards();
+});
+document.getElementById('s2-noBg').addEventListener('change',e=>{
+  state.themeColor.noBg=e.target.checked;buildThemeCards();
+});
+
+// ═══════════════════════════════════════════
+//  Init
+// ═══════════════════════════════════════════
+buildThemeCards();
+buildArrowPalette();
+selectTemplate(0);
+document.querySelectorAll('input[type=range]').forEach(updateLabel);
+</script>
+</body>
+</html>

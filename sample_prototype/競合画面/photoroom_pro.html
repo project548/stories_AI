@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhotoRoom Pro アップグレード</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #F5F5F7;
+    color: #1A1A1A;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .address-bar {
+    background: #fff;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .addr-icon { width: 22px; height: 22px; opacity: 0.4; flex-shrink: 0; }
+  .addr-pill {
+    flex: 1;
+    background: #EBEBEB;
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #3A3A3A;
+    text-align: center;
+  }
+  .share-icon { width: 22px; height: 22px; opacity: 0.7; flex-shrink: 0; }
+
+  .content { padding: 24px 20px 120px; }
+
+  .plan-tabs {
+    background: #D5C8EE;
+    border-radius: 30px;
+    display: flex;
+    padding: 4px;
+    margin-bottom: 28px;
+    gap: 2px;
+  }
+  .plan-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 26px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5B2D8E;
+    cursor: pointer;
+  }
+  .plan-tab.active { background: #5B2D8E; color: #fff; }
+
+  .upgrade-title {
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 28px;
+  }
+
+  .features { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+  .feature-item { display: flex; align-items: flex-start; gap: 14px; }
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: #fff;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .feature-icon svg { width: 22px; height: 22px; }
+  .feature-text { font-size: 15px; font-weight: 500; line-height: 1.5; padding-top: 6px; }
+
+  .payment-label { font-size: 14px; color: #6B6B6B; font-weight: 500; margin-bottom: 12px; }
+
+  .plan-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 2px solid #E0E0E0;
+    margin-bottom: 10px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .plan-card.selected { border-color: #9B6FD8; }
+  .plan-card-inner { display: flex; align-items: center; padding: 18px; gap: 14px; }
+
+  .radio {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2px solid #D0D0D0;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .radio.checked { background: #5B2D8E; border-color: #5B2D8E; }
+  .radio.checked::after {
+    content: '';
+    display: block;
+    width: 12px; height: 12px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+
+  .plan-info { flex: 1; }
+  .plan-name { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .plan-sub { font-size: 12px; color: #6B6B6B; }
+  .plan-price-block { text-align: right; }
+  .plan-price { font-size: 18px; font-weight: 700; }
+  .plan-price-unit { font-size: 11px; color: #6B6B6B; margin-top: 2px; }
+
+  .plan-badge {
+    background: linear-gradient(135deg, #7B4FBB 0%, #C060C0 100%);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px 16px;
+  }
+
+  .cta-wrapper { margin-top: 24px; }
+  .cta-btn {
+    width: 100%;
+    background: #3B1F8C;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    border: none;
+    border-radius: 14px;
+    padding: 20px;
+    cursor: pointer;
+  }
+  .cta-note { font-size: 11px; color: #6B6B6B; text-align: center; margin-top: 12px; line-height: 1.5; }
+
+  .bottom-bar {
+    background: #F0F0F0;
+    border-top: 1px solid #E0E0E0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 12px 20px 28px;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+  }
+  .bottom-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 44px; height: 36px; opacity: 0.5; }
+  .bottom-btn svg { width: 22px; height: 22px; }
+  .plus-btn { width: 44px; height: 44px; background: #D0D0D0; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+  .plus-btn svg { width: 22px; height: 22px; }
+  .tab-count { background: #808080; color: #fff; font-size: 12px; font-weight: 700; border-radius: 6px; padding: 4px 8px; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="address-bar">
+  <svg class="addr-icon" viewBox="0 0 24 24" fill="#888"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+  <div class="addr-pill">app.photoroom.com</div>
+  <svg class="share-icon" viewBox="0 0 24 24" fill="#555"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"/></svg>
+</div>
+
+<div class="content">
+  <div class="plan-tabs">
+    <div class="plan-tab active">Proプラン</div>
+    <div class="plan-tab">Maxプラン</div>
+    <div class="plan-tab">Ultraプラン</div>
+  </div>
+
+  <h1 class="upgrade-title">Proにアップグレードしましょう</h1>
+
+  <div class="features">
+    <div class="feature-item">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+          <polyline points="2 12 12 17 22 12"/>
+          <polyline points="2 17 12 22 22 17"/>
+        </svg>
+      </div>
+      <div class="feature-text">最大50枚の画像を一括処理しましょう</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="#333"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+      </div>
+      <div class="feature-text">AI機能のエクスポート上限が大幅アップ</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="8" height="8" rx="1"/>
+          <rect x="13" y="3" width="8" height="5" rx="1"/>
+          <rect x="13" y="13" width="8" height="8" rx="1"/>
+          <rect x="3" y="13" width="8" height="5" rx="1"/>
+        </svg>
+      </div>
+      <div class="feature-text">各プラットフォームに最適なサイズに調整しましょう</div>
+    </div>
+  </div>
+
+  <div class="payment-label">お支払い期間を選択</div>
+
+  <div class="plan-card selected">
+    <div class="plan-card-inner">
+      <div class="radio checked"></div>
+      <div class="plan-info">
+        <div class="plan-name">年額</div>
+        <div class="plan-sub">¥9,900（年額請求）</div>
+      </div>
+      <div class="plan-price-block">
+        <div class="plan-price">¥825</div>
+        <div class="plan-price-unit">月額 / 年額請求</div>
+      </div>
+    </div>
+    <div class="plan-badge">年間プランなら45%以上お得にご利用いただけます</div>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-card-inner">
+      <div class="radio"></div>
+      <div class="plan-info">
+        <div class="plan-name">月額</div>
+        <div class="plan-sub">¥1,500（月額）</div>
+      </div>
+      <div class="plan-price-block">
+        <div class="plan-price">¥1,500</div>
+        <div class="plan-price-unit">月額</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-wrapper">
+    <button class="cta-btn">続ける</button>
+    <p class="cta-note">その後、1人のユーザー分として、年間合計で¥9,900がかかります。</p>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <button class="bottom-btn"><svg viewBox="0 0 24 24" fill="#444"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+  <button class="bottom-btn"><svg viewBox="0 0 24 24" fill="#444"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button>
+  <button class="plus-btn"><svg viewBox="0 0 24 24" fill="#555"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+  <button class="tab-count">57</button>
+  <button class="bottom-btn"><svg viewBox="0 0 24 24" fill="#444"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+</div>
+
+</body>
+</html>

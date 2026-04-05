@@ -1,0 +1,400 @@
+<style>
+:root {
+  --c-blue: #2563EB;
+  --c-blue-l: #DBEAFE;
+  --c-purple: #7C3AED;
+  --c-purple-l: #EDE9FE;
+  --c-teal: #0F766E;
+  --c-teal-l: #CCFBF1;
+  --c-amber: #B45309;
+  --c-amber-l: #FEF3C7;
+  --c-coral: #DC2626;
+  --c-coral-l: #FEE2E2;
+  --c-gray: #374151;
+  --c-gray-l: #F3F4F6;
+  --line: #9CA3AF;
+  --line-strong: #374151;
+  --bg: var(--color-background-primary);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { padding: 24px 20px 40px; }
+
+/* ── NODE ── */
+.node {
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  white-space: nowrap;
+  border: 2px solid transparent;
+  cursor: default;
+}
+.node .label { font-size: 11px; font-weight: 400; opacity: 0.65; }
+.node.blue   { background: var(--c-blue-l);   color: #1E3A8A; border-color: var(--c-blue); }
+.node.purple { background: var(--c-purple-l);  color: #4C1D95; border-color: var(--c-purple); }
+.node.teal   { background: var(--c-teal-l);    color: #134E4A; border-color: var(--c-teal); }
+.node.amber  { background: var(--c-amber-l);   color: #78350F; border-color: var(--c-amber); }
+.node.coral  { background: var(--c-coral-l);   color: #991B1B; border-color: var(--c-coral); }
+.node.gray   { background: var(--c-gray-l);    color: #111827; border-color: #D1D5DB; }
+.node.system { background: #F9FAFB; color: #6B7280; border: 2px dashed #D1D5DB; }
+
+/* ── PHASE BAND ── */
+.phase {
+  border-left: 4px solid var(--color-border-secondary);
+  padding-left: 16px;
+  margin-bottom: 36px;
+}
+.phase-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 14px;
+}
+.phase.pre   { border-color: #D1D5DB; }
+.phase.auth  { border-color: var(--c-teal); }
+.phase.p1    { border-color: var(--c-blue); }
+.phase.p2    { border-color: var(--c-amber); }
+.phase.p3    { border-color: var(--c-coral); }
+
+/* ── ROW ── */
+.row { display: flex; align-items: flex-start; gap: 0; }
+.col { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+
+/* ── ARROW SVG ── */
+.arr-wrap { display: flex; align-items: center; }
+svg.arrow { flex-shrink: 0; overflow: visible; }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex; flex-wrap: wrap; gap: 10px 20px;
+  padding: 14px 16px; border-radius: 8px;
+  background: var(--color-background-secondary);
+  margin-bottom: 28px;
+  font-size: 11px;
+}
+.leg-item { display: flex; align-items: center; gap: 6px; }
+.leg-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+/* ── STEP BOX ── */
+.step-box {
+  border: 2px solid var(--c-blue);
+  border-radius: 12px;
+  padding: 10px 14px 10px 14px;
+  background: var(--c-blue-l);
+  display: flex; align-items: center; gap: 10px;
+}
+.step-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--c-blue); color: white;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-num.purple { background: var(--c-purple); }
+.step-num.teal   { background: var(--c-teal); }
+
+/* ── COMMON NOTE ── */
+.common-bar {
+  background: #FEFCE8; border: 1px solid #FDE047;
+  border-radius: 8px; padding: 8px 14px;
+  font-size: 11px; color: #713F12;
+  margin-bottom: 20px;
+}
+</style>
+
+<div class="wrap">
+
+<!-- 凡例 -->
+<div class="legend">
+  <div class="leg-item"><div class="leg-dot" style="background:#2563EB"></div>入力STEP</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#7C3AED"></div>テキスト確認・編集</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#0F766E"></div>合成・保存・完了</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#B45309"></div>課金</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#DC2626"></div>管理</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#9CA3AF;border:1px dashed #6B7280"></div>システム処理</div>
+  <div class="leg-item">
+    <svg width="40" height="14"><line x1="0" y1="7" x2="30" y2="7" stroke="#374151" stroke-width="2" marker-end="url(#ah)"/><defs><marker id="ah" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs></svg>
+    通常遷移
+  </div>
+  <div class="leg-item">
+    <svg width="40" height="14"><line x1="0" y1="7" x2="30" y2="7" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ah2)"/><defs><marker id="ah2" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></marker></defs></svg>
+    条件付き
+  </div>
+  <div class="leg-item">
+    <svg width="40" height="14"><line x1="0" y1="7" x2="30" y2="7" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ah3)"/><defs><marker id="ah3" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round"/></marker></defs></svg>
+    エラー遷移
+  </div>
+</div>
+
+<!-- 全画面共通 -->
+<div class="common-bar">
+  ★ 全画面共通：グローバルナビ（⌂ ↩ ↪ ⬇ 緑グラデ帯）　画面ナビ黒帯（①〜⑤ 現在地をパープルで表示）　ボトムナビ（ホーム・履歴・マイページ）
+</div>
+
+<!-- ─── 公開前 ─── -->
+<div class="phase pre">
+  <div class="phase-label">公開前</div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+    <div class="node gray" style="min-width:280px;align-items:center">
+      <span>ランディングページ　<code style="font-size:10px">/</code></span>
+      <span class="label">CTA · Pro ¥3,980 · PDCA伴走プラン · 料金比較</span>
+    </div>
+    <!-- LP → auth -->
+    <svg width="320" height="40" style="overflow:visible">
+      <defs><marker id="a1" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+      <line x1="100" y1="4" x2="40" y2="38" stroke="#374151" stroke-width="2" marker-end="url(#a1)"/>
+      <line x1="220" y1="4" x2="280" y2="38" stroke="#374151" stroke-width="2" marker-end="url(#a1)"/>
+      <text x="50" y="28" fill="#6B7280" style="font-size:10px">新規登録</text>
+      <text x="226" y="28" fill="#6B7280" style="font-size:10px">ログイン</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ─── 認証 ─── -->
+<div class="phase auth">
+  <div class="phase-label">認証</div>
+  <div style="display:flex;gap:24px;align-items:flex-start">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+      <div class="node teal" style="min-width:200px">
+        <span>サインアップ　<code style="font-size:10px">/signup</code></span>
+        <span class="label">名前・メール・PW・Google OAuth</span>
+        <span class="label">→ メール認証待ち画面</span>
+      </div>
+      <svg width="200" height="28"><defs><marker id="a2" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="100" y1="2" x2="100" y2="26" stroke="#374151" stroke-width="2" marker-end="url(#a2)"/><text x="106" y="18" fill="#6B7280" style="font-size:10px">認証完了</text></svg>
+    </div>
+    <div style="padding-top:8px;color:#9CA3AF;font-size:18px;font-weight:300;line-height:52px">or</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+      <div class="node teal" style="min-width:200px">
+        <span>ログイン　<code style="font-size:10px">/login</code></span>
+        <span class="label">メール・PW・Google OAuth</span>
+        <span class="label">パスワードリセット（メール送信）</span>
+      </div>
+      <svg width="200" height="28"><defs><marker id="a3" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="100" y1="2" x2="100" y2="26" stroke="#374151" stroke-width="2" marker-end="url(#a3)"/><text x="106" y="18" fill="#6B7280" style="font-size:10px">認証完了</text></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Phase 1 ─── -->
+<div class="phase p1">
+  <div class="phase-label">Phase 1　生成フロー</div>
+
+  <!-- ダッシュボード -->
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0">
+    <div class="node blue" style="min-width:320px">
+      <span>ダッシュボード　<code style="font-size:10px">/dashboard</code></span>
+      <span class="label">残り生成日数バー · 生成履歴カード · ＋新規生成ボタン</span>
+    </div>
+    <svg width="320" height="28"><defs><marker id="a4" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="100" y1="2" x2="100" y2="26" stroke="#374151" stroke-width="2" marker-end="url(#a4)"/><text x="106" y="18" fill="#6B7280" style="font-size:10px">＋新規生成タップ</text></svg>
+
+    <!-- STEP群を縦積み -->
+    <!-- STEP1 -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:2px">
+      <div class="node blue" style="min-width:400px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="step-num">1</div>
+          <div>
+            <div>基本情報入力　<code style="font-size:10px">/new/step1</code></div>
+            <div class="label">ジャンル · ターゲット（メイン/サブ）· 生成日数（1〜30日）· 悩み×3 · 理想×3 · 理由×3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <svg width="60" height="22"><defs><marker id="a5" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="24" y1="2" x2="24" y2="20" stroke="#374151" stroke-width="2" marker-end="url(#a5)"/></svg>
+
+    <!-- STEP2 -->
+    <div class="node blue" style="min-width:400px;margin-bottom:2px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="step-num">2</div>
+        <div>
+          <div>スタイル選択　<code style="font-size:10px">/new/step2</code></div>
+          <div class="label">フォント3択（横スクロールカード） · シンプル / かわいい / 落ち着き</div>
+        </div>
+      </div>
+    </div>
+    <svg width="60" height="22"><defs><marker id="a6" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="24" y1="2" x2="24" y2="20" stroke="#374151" stroke-width="2" marker-end="url(#a6)"/></svg>
+
+    <!-- AI生成 -->
+    <div class="node system" style="min-width:400px;margin-bottom:2px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:26px;height:26px;border-radius:50%;background:#E5E7EB;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">⚙</div>
+        <div>
+          <div>AIテキスト生成中（システム処理）</div>
+          <div class="label">1日分ずつ順次生成 · 「Day N/指定日数 生成中…」プログレスバー · 完了分を随時表示</div>
+          <div class="label" style="color:#DC2626">APIエラー → ダッシュボードへ戻る</div>
+        </div>
+      </div>
+    </div>
+    <svg width="60" height="22"><defs><marker id="a7" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="24" y1="2" x2="24" y2="20" stroke="#374151" stroke-width="2" marker-end="url(#a7)"/></svg>
+
+    <!-- STEP3 -->
+    <div class="node purple" style="min-width:400px;margin-bottom:2px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="step-num purple">3</div>
+        <div>
+          <div>テキスト確認・手動修正　<code style="font-size:10px">/new/step3</code></div>
+          <div class="label">日数分テキスト一覧 · 直接編集（制限なし・カウントなし）· 「テキストを確定してレイアウトへ」ボタン</div>
+        </div>
+      </div>
+    </div>
+    <svg width="60" height="22"><defs><marker id="a8" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="24" y1="2" x2="24" y2="20" stroke="#374151" stroke-width="2" marker-end="url(#a8)"/></svg>
+
+    <!-- STEP4 -->
+    <div class="node blue" style="min-width:400px;margin-bottom:2px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="step-num">4</div>
+        <div>
+          <div>レイアウト（テンプレート）選択　<code style="font-size:10px">/new/step4</code></div>
+          <div class="label">シチュエーション横スクロール → 雰囲気チップで絞込 → 3列9:16グリッド</div>
+          <div class="label">先頭「空のデザインを作成」固定 · 最終10種 · タップで選択確定 → STEP5へ</div>
+        </div>
+      </div>
+    </div>
+    <svg width="60" height="22"><defs><marker id="a9" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="24" y1="2" x2="24" y2="20" stroke="#374151" stroke-width="2" marker-end="url(#a9)"/></svg>
+
+    <!-- STEP5 大箱 -->
+    <div style="border:2.5px solid #0F766E;border-radius:14px;padding:16px 18px;background:#F0FDF9;min-width:500px">
+      <div style="font-size:11px;font-weight:700;color:#0F766E;letter-spacing:.05em;margin-bottom:12px">STEP 5 — 合成プレビュー・編集・保存　<code style="font-size:10px">/new/step5</code></div>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <!-- 一覧 -->
+        <div class="node teal" style="font-size:12px">
+          <span>合成プレビュー一覧</span>
+          <span class="label">フェーズタブ横スクロール（認知/興味/関心/意欲/行動）</span>
+          <span class="label">9:16サムネイルグリッド · 背景なし仮表示</span>
+          <span class="label">「背景を追加＋」→ カメラロール → 即時再合成</span>
+          <span class="label">「追加画像＋」→ 重ね画像アップ</span>
+        </div>
+        <!-- 全画面 -->
+        <div class="node teal" style="font-size:12px">
+          <span>全画面拡大表示</span>
+          <span class="label">9:16全画面 · 横フリックで送り</span>
+          <span class="label">グローバルナビ⌂↩↪⬇常時表示</span>
+        </div>
+      </div>
+
+      <svg width="60" height="20"><defs><marker id="a10" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#0F766E" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="24" y1="2" x2="24" y2="18" stroke="#0F766E" stroke-width="2" marker-end="url(#a10)"/><text x="30" y="14" fill="#0F766E" style="font-size:9px">編集タップ</text></svg>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px">
+        <!-- 編集 -->
+        <div class="node purple" style="font-size:12px;min-width:220px">
+          <span>編集モード（Canvaライク）</span>
+          <span class="label">キャンバス9:16 · テキストタップ→紫ボーダー</span>
+          <span class="label">フローティングバー：🌀AI / ✏ / ↩ / ⊕ / 🗑 / ⋯</span>
+          <span class="label">ツールバー：T(文字) / ✏ペン / ◻消しゴム / ★スタンプ / 🖼画像 / ↩取消</span>
+          <span class="label">ボトムタブ：フォント / スタイル / サイズ / カラー / 書式</span>
+          <span class="label">✓次へ → 保存ローディングへ</span>
+        </div>
+        <!-- AI再生成 -->
+        <div class="node purple" style="font-size:12px">
+          <span>AI再生成（5回上限）</span>
+          <span class="label">個別・選択・全体を合算カウント</span>
+          <span class="label">5回超過 → ボタングレーアウト</span>
+          <span class="label">→ 手動テキスト編集に誘導</span>
+        </div>
+      </div>
+
+      <svg width="60" height="20"><defs><marker id="a11" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#0F766E" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="24" y1="2" x2="24" y2="18" stroke="#0F766E" stroke-width="2" marker-end="url(#a11)"/></svg>
+
+      <!-- ローディング -->
+      <div class="node system" style="font-size:12px;min-width:300px;margin-bottom:10px">
+        <span>保存中ローディング</span>
+        <span class="label">デザインプレビュー · グラデプログレスバー · キャンセル → 編集へ戻る</span>
+      </div>
+
+      <svg width="60" height="20"><defs><marker id="a12" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#0F766E" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="24" y1="2" x2="24" y2="18" stroke="#0F766E" stroke-width="2" marker-end="url(#a12)"/></svg>
+
+      <!-- 保存完了 -->
+      <div class="node teal" style="font-size:12px;min-width:300px">
+        <span>保存完了　<code style="font-size:10px">/new/complete</code></span>
+        <span class="label">🎉紙吹雪 · 「カメラロールに保存しました」· 保存枚数</span>
+        <span class="label">モチベーション引用 · 「このデザインを共有」パープルCTA</span>
+        <span class="label">「⌂ TOPに戻る」· 「続けて編集する」</span>
+      </div>
+    </div>
+
+    <!-- 履歴・上限 -->
+    <div style="display:flex;gap:24px;margin-top:18px;flex-wrap:wrap">
+      <div class="node gray" style="font-size:12px">
+        <span>生成履歴　<code style="font-size:10px">/history</code></span>
+        <span class="label">ボトムナビから常時アクセス</span>
+        <span class="label">過去セット → STEP5に再アクセス</span>
+      </div>
+      <div class="node amber" style="font-size:12px">
+        <span>上限到達状態（ダッシュボード内）</span>
+        <span class="label">月31日分消費 or 再生成5回到達</span>
+        <span class="label">新規生成グレーアウト · 来月リセット日 · PDCA誘導</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Phase 2 ─── -->
+<div class="phase p2" style="margin-top:28px">
+  <div class="phase-label">Phase 2　課金</div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="node amber" style="min-width:240px;font-size:12px">
+        <span>料金プラン　<code style="font-size:10px">/pricing</code></span>
+        <span class="label">Pro ¥3,980 · PDCA伴走プラン</span>
+        <span class="label">3日間無料トライアルCTA</span>
+      </div>
+      <div class="node amber" style="min-width:240px;font-size:12px">
+        <span>支払い　<code style="font-size:10px">/checkout</code></span>
+        <span class="label">Stripe Checkout Hosted</span>
+        <span class="label">Apple Pay / Google Pay 対応</span>
+        <span class="label" style="color:#DC2626">決済失敗 → 料金プランへ戻る</span>
+      </div>
+      <div class="node gray" style="min-width:240px;font-size:12px">
+        <span>解約完了</span>
+        <span class="label">月末まで有効 → LP誘導</span>
+      </div>
+    </div>
+    <div class="node amber" style="min-width:240px;font-size:12px">
+      <span>マイページ　<code style="font-size:10px">/account</code></span>
+      <span class="label">ボトムナビから常時アクセス</span>
+      <span class="label">プラン名 · 今月使用日数 · 残り日数バー</span>
+      <span class="label">プラン変更 → 料金プランへ</span>
+      <span class="label">請求管理 → Stripe Customer Portal</span>
+      <span class="label">解約 → 解約完了</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Phase 3 ─── -->
+<div class="phase p3" style="margin-top:28px">
+  <div class="phase-label">Phase 3　管理（管理者のみ）</div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap">
+    <div class="node coral" style="font-size:12px">
+      <span>管理ダッシュボード　<code style="font-size:10px">/admin</code></span>
+      <span class="label">MRR · 会員数 · API費用 · チャーンリスク</span>
+    </div>
+    <div class="node coral" style="font-size:12px">
+      <span>エラーログ　<code style="font-size:10px">/admin/errors</code></span>
+      <span class="label">Sentry連携 · Slack通知確認</span>
+    </div>
+    <div class="node coral" style="font-size:12px">
+      <span>コスト管理　<code style="font-size:10px">/admin/costs</code></span>
+      <span class="label">API費用推移</span>
+    </div>
+    <div class="node coral" style="font-size:12px">
+      <span>ユーザー管理　<code style="font-size:10px">/admin/users</code></span>
+      <span class="label">チャーンリスク</span>
+    </div>
+    <div class="node coral" style="font-size:12px">
+      <span>プロンプトエディタ　<code style="font-size:10px">/admin/prompts</code></span>
+      <span class="label">テスト生成 · 修正 · 本番反映</span>
+    </div>
+    <div class="node coral" style="font-size:12px">
+      <span>PDCA伴走設定　<code style="font-size:10px">/admin/pdca</code></span>
+      <span class="label">レビュー · 提案 · 目標設定</span>
+    </div>
+  </div>
+</div>
+
+</div>

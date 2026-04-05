@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story 01</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.story {
+  width: min(390px, 100vw);
+  aspect-ratio: 9/16;
+}
+svg { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div class="story">
+<svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg"
+     style="font-family:'Hiragino Sans','Noto Sans JP','Yu Gothic',sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#0C0C10"/>
+      <stop offset="100%" stop-color="#0A0A0E"/>
+    </linearGradient>
+    <!-- 人物エリア右側を少し明るく -->
+    <radialGradient id="personGlow" cx="75%" cy="55%" r="42%">
+      <stop offset="0%"  stop-color="#1C1C24" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0C0C10" stop-opacity="0"/>
+    </radialGradient>
+    <!-- 人物シルエットのフェードアウト（下） -->
+    <linearGradient id="silFadeY" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#252530"/>
+      <stop offset="85%"  stop-color="#1A1A22"/>
+      <stop offset="100%" stop-color="#0C0C10"/>
+    </linearGradient>
+    <!-- 人物シルエットのフェードアウト（横） -->
+    <linearGradient id="silFadeX" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#0C0C10" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#0C0C10" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="storyClip">
+      <rect width="1080" height="1920"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#storyClip)">
+
+    <!-- ===== 背景 ===== -->
+    <rect width="1080" height="1920" fill="url(#bgGrad)"/>
+    <rect width="1080" height="1920" fill="url(#personGlow)"/>
+
+    <!-- ===== 人物シルエット（右半分） ===== -->
+    <!-- 頭部 -->
+    <ellipse cx="760" cy="680" rx="145" ry="165" fill="#222230"/>
+    <!-- 首 -->
+    <rect x="700" y="835" width="120" height="100" rx="10" fill="#1E1E2A"/>
+    <!-- 肩・胴体（ジャケット） -->
+    <path d="
+      M500,940
+      Q580,900 660,910 L680,930 L760,920 L840,930 L860,910
+      Q940,900 1020,940
+      L1080,1020 L1080,1920 L440,1920 Z
+    " fill="#1A1A24"/>
+    <!-- ジャケットの左ラペル -->
+    <path d="M660,910 L620,1060 L720,1020 L760,920 Z" fill="#131318"/>
+    <!-- ジャケットの右ラペル -->
+    <path d="M860,910 L900,1060 L800,1020 L760,920 Z" fill="#131318"/>
+    <!-- シャツ/ネクタイ -->
+    <path d="M720,1020 L740,1150 L760,1120 L780,1150 L800,1020 Z" fill="#181820"/>
+    <!-- 左側フェードで自然に溶け込む -->
+    <rect x="440" y="600" width="400" height="1320" fill="url(#silFadeX)"/>
+    <!-- 下部フェード -->
+    <rect x="440" y="1600" width="640" height="320" fill="url(#bgGrad)"/>
+
+    <!-- ===== テキストブロック ===== -->
+
+    <!-- ■ 見出し1: 収入は上がってないのに -->
+    <text
+      x="60" y="270"
+      font-size="84"
+      font-weight="900"
+      fill="white"
+      dominant-baseline="auto"
+    >収入は上がってないのに</text>
+
+    <!-- ■ 見出し2: 物価は上がってく（やや大きく） -->
+    <text
+      x="60" y="390"
+      font-size="96"
+      font-weight="900"
+      fill="white"
+      dominant-baseline="auto"
+    >物価は上がってく</text>
+
+    <!-- ■ 本文テキストブロック（白背景 + 角丸） -->
+    <!-- 最長行「厚生労働省の調査によると、実質賃金は」= 19文字×38px≒722 + 左余白28 + 右余白30 → 幅780以上必要 -->
+    <rect x="52" y="430" width="976" height="248" rx="18" fill="white"/>
+    <text x="80" y="487" font-size="38" fill="#1a1a1a" font-weight="400">厚生労働省の調査によると、実質賃金は</text>
+    <text x="80" y="537" font-size="38" fill="#1a1a1a" font-weight="400">3年連続でマイナスを記録。消費者物価</text>
+    <text x="80" y="587" font-size="38" fill="#1a1a1a" font-weight="400">指数は前年比＋3.2%で上昇が続く。</text>
+    <text x="80" y="637" font-size="38" fill="#1a1a1a" font-weight="400">（出典：厚生労働省 2024年度）</text>
+
+    <!-- ■ データ強調行 -->
+    <!-- 「🌐 国のデータでも証明されてる」≒16文字×46px≒736 + 左余白28 + 右余白30 → 幅794以上必要 -->
+    <rect x="52" y="700" width="976" height="90" rx="18" fill="#000000" fill-opacity="0.45"/>
+    <text x="80" y="760" font-size="46" font-weight="700" fill="white">🌐 国のデータでも証明されてる</text>
+
+    <!-- ■ 下部 大見出し -->
+    <text
+      x="60" y="1150"
+      font-size="88"
+      font-weight="900"
+      fill="white"
+    >今は生きていても、</text>
+
+  </g>
+</svg>
+</div>
+</body>
+</html>

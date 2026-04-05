@@ -1,0 +1,506 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue','Hiragino Sans',sans-serif;background:#F0EEE8;padding:16px}
+.sec{font-size:10px;font-weight:700;color:#7B3FC9;letter-spacing:.08em;text-transform:uppercase;margin:20px 0 12px 2px;border-left:3px solid #7B3FC9;padding-left:8px}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;margin-bottom:20px}
+.pw{width:188px;background:#fff;border-radius:22px;border:2px solid #D0D0D0;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.09);flex-shrink:0;position:relative}
+.pw::before{content:'';display:block;width:52px;height:7px;background:#D0D0D0;border-radius:0 0 7px 7px;margin:0 auto}
+.pw.wide{width:240px}
+.lbl{font-size:10px;font-weight:700;color:#555;text-align:center;margin-top:7px}
+.note{font-size:9px;color:#aaa;text-align:center;margin-top:3px;font-style:italic}
+.gnav{background:linear-gradient(135deg,#00C9B1 0%,#4A6CF7 50%,#8B2FC9 100%);padding:8px 12px;display:flex;align-items:center;justify-content:space-between}
+.gi{color:#fff;font-size:15px;opacity:.9}
+.gi.off{opacity:.3}
+.snav{background:#111;padding:4px 8px;display:flex;gap:3px;overflow-x:auto}
+.snav::-webkit-scrollbar{display:none}
+.sb{flex-shrink:0;padding:2px 7px;border-radius:12px;font-size:7.5px;font-weight:700;border:none;background:#333;color:#fff}
+.sb.on{background:#7B3FC9}
+.ct{padding:9px 11px}
+.fl{font-size:8.5px;color:#999;margin-bottom:3px;margin-top:7px}
+.fl:first-child{margin-top:0}
+.inp{width:100%;padding:7px 9px;border:1.5px solid #ddd;border-radius:7px;font-size:10px;color:#333;background:#fff}
+.inp.v{border-color:#7B3FC9}
+.sel{width:100%;padding:7px 9px;border:1.5px solid #ddd;border-radius:7px;font-size:10px;color:#333;background:#fff;appearance:none}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.chip{padding:3px 9px;border-radius:12px;font-size:8.5px;border:1.5px solid #ddd;background:#fff;color:#555}
+.chip.on{background:#7B3FC9;border-color:#7B3FC9;color:#fff;font-weight:700}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.bp{width:100%;padding:9px;border-radius:11px;background:#7B3FC9;color:#fff;border:none;font-size:10px;font-weight:700;text-align:center;margin-top:7px;cursor:pointer}
+.bo{width:100%;padding:8px;border-radius:11px;background:#fff;color:#7B3FC9;border:1.5px solid #7B3FC9;font-size:9.5px;font-weight:700;text-align:center;margin-top:5px}
+.pbar{height:3px;background:#eee;border-radius:2px;margin:5px 0 9px}
+.pfill{height:3px;border-radius:2px;background:#7B3FC9}
+.sbox{border:1px solid #eee;border-radius:9px;overflow:hidden;margin-top:9px}
+.sh{background:#F7F5FF;padding:6px 9px;display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:#4C1D95}
+.si{font-size:12px}
+.sb2{padding:7px 9px;display:flex;flex-direction:column;gap:8px}
+.req{font-size:7px;background:#FEE2E2;color:#DC2626;padding:1px 4px;border-radius:3px;font-weight:700;margin-left:auto}
+.opt{font-size:7px;background:#F3F4F6;color:#6B7280;padding:1px 4px;border-radius:3px;margin-left:auto}
+.ta{width:100%;padding:6px 8px;border:1.5px solid #ddd;border-radius:7px;font-size:9.5px;color:#333;resize:none;min-height:42px;line-height:1.4;background:#fff}
+.slider-row{display:flex;align-items:center;gap:7px;margin-top:3px}
+.slid{flex:1;accent-color:#7B3FC9}
+.sv{font-size:11px;font-weight:700;color:#7B3FC9;min-width:22px;text-align:right}
+.trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-top:3px}
+.ti{width:100%;padding:5px 4px;border:1.5px solid #ddd;border-radius:6px;font-size:8.5px;text-align:center;color:#333}
+.ti.on{border-color:#7B3FC9;color:#4C1D95}
+.ti.req-border{border-color:#FDA4AF}
+.ib{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:7px;padding:6px 8px;margin-top:5px}
+.il{font-size:8.5px;font-weight:700;color:#7C3AED;margin-bottom:2px}
+.aib{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:7px;padding:6px 9px;display:flex;align-items:center;gap:6px;font-size:9.5px;color:#4C1D95;font-weight:700;margin-top:5px}
+.bnav{border-top:1px solid #eee;background:#fff;display:flex;justify-content:space-around;padding:6px 0 9px}
+.bi{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:7.5px;color:#888}
+.bi.on{color:#7B3FC9}
+.bic{font-size:13px}
+.annot{font-size:8px;color:#888;margin-top:5px;padding:4px 7px;border:1px dashed #ddd;border-radius:5px;background:#fafafa;line-height:1.5}
+.menu-overlay{background:#fff;border-radius:0 0 16px 16px;position:absolute;top:0;left:0;right:0;z-index:20;box-shadow:0 4px 20px rgba(0,0,0,.15);padding-bottom:12px}
+/* 新規追加スタイル */
+.stance-chip{padding:5px 10px;border-radius:10px;font-size:8.5px;border:1.5px solid #ddd;background:#fff;color:#555;text-align:center;flex:1}
+.stance-chip.on{background:#7B3FC9;border-color:#7B3FC9;color:#fff;font-weight:700}
+.import-tab{flex:1;padding:5px 4px;border-radius:6px;font-size:8px;border:1.5px solid #ddd;background:#fff;color:#888;text-align:center;cursor:pointer}
+.import-tab.on{background:#F7F5FF;border-color:#7B3FC9;color:#7B3FC9;font-weight:700}
+.q-card{border:1px solid #eee;border-radius:8px;padding:8px 9px;margin-bottom:7px}
+.q-num{font-size:8px;color:#7B3FC9;font-weight:700;margin-bottom:4px}
+.q-text{font-size:9px;font-weight:700;color:#1a1a1a;margin-bottom:6px;line-height:1.4}
+.q-opts{display:flex;flex-direction:column;gap:3px}
+.q-opt{padding:5px 9px;border-radius:8px;font-size:8.5px;border:1.5px solid #ddd;background:#fff;color:#555}
+.q-opt.on{background:#EDE9FE;border-color:#7B3FC9;color:#4C1D95;font-weight:600}
+.prog-dot{width:6px;height:6px;border-radius:50%;background:#ddd;display:inline-block;margin:0 2px}
+.prog-dot.on{background:#7B3FC9}
+.new-badge{font-size:7px;background:#FEF3C7;color:#92400E;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px}
+</style>
+
+<!-- ============================================================ -->
+<!-- 認証セクション（変更なし） -->
+<!-- ============================================================ -->
+<div class="sec">認証</div>
+<div class="row">
+
+<div>
+<div class="pw">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:11px;color:#fff;font-weight:500">Stories AI</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb on">①登録</div><div class="sb">②基本情報</div><div class="sb">③…</div></div>
+  <div class="ct">
+    <div style="font-size:14px;font-weight:900;margin:8px 0 3px">Stories AI</div>
+    <div style="font-size:8.5px;color:#888;margin-bottom:10px">SNS発信者のためのストーリーズ自動生成</div>
+    <div style="border:1.5px solid #ddd;border-radius:9px;padding:7px 9px;display:flex;align-items:center;gap:7px;font-size:9.5px;color:#555;margin-bottom:7px"><span style="font-size:12px;font-weight:700">G</span>Googleで登録</div>
+    <div style="display:flex;align-items:center;gap:5px;margin-bottom:7px"><div style="flex:1;height:1px;background:#eee"></div><span style="font-size:8px;color:#bbb">または</span><div style="flex:1;height:1px;background:#eee"></div></div>
+    <div class="fl">お名前</div><input class="inp" placeholder="山田 花子">
+    <div class="fl">メールアドレス</div><input class="inp" placeholder="you@example.com">
+    <div class="fl">パスワード</div><input class="inp" placeholder="••••••••" type="password">
+    <div class="bp">3日間無料で始める</div>
+    <div style="font-size:7.5px;color:#bbb;text-align:center;margin-top:5px">利用規約・プライバシーポリシーに同意</div>
+    <div style="font-size:8.5px;color:#7B3FC9;text-align:center;margin-top:7px">すでにアカウントがある → ログイン</div>
+  </div>
+</div>
+<div class="lbl">サインアップ</div>
+</div>
+
+<div>
+<div class="pw">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:11px;color:#fff;font-weight:500">Stories AI</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb on">①ログイン</div><div class="sb">②基本情報</div></div>
+  <div class="ct">
+    <div style="font-size:13px;font-weight:900;margin:8px 0 10px">ログイン</div>
+    <div style="border:1.5px solid #ddd;border-radius:9px;padding:7px 9px;display:flex;align-items:center;gap:7px;font-size:9.5px;color:#555;margin-bottom:8px"><span style="font-size:12px;font-weight:700">G</span>Googleでログイン</div>
+    <div style="display:flex;align-items:center;gap:5px;margin-bottom:7px"><div style="flex:1;height:1px;background:#eee"></div><span style="font-size:8px;color:#bbb">または</span><div style="flex:1;height:1px;background:#eee"></div></div>
+    <div class="fl">メールアドレス</div><input class="inp" placeholder="you@example.com">
+    <div class="fl">パスワード</div><input class="inp" placeholder="••••••••" type="password">
+    <div style="text-align:right;margin-top:4px"><span style="font-size:8.5px;color:#7B3FC9">パスワードを忘れた方</span></div>
+    <div class="bp" style="margin-top:8px">ログイン</div>
+    <div style="font-size:8.5px;color:#7B3FC9;text-align:center;margin-top:8px">新規登録はこちら</div>
+  </div>
+</div>
+<div class="lbl">ログイン</div>
+</div>
+
+<div>
+<div class="pw">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:11px;color:#fff;font-weight:500">Stories AI</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb on">①メール認証</div><div class="sb">②オンボーディング</div></div>
+  <div class="ct">
+    <div style="font-size:28px;text-align:center;margin:14px 0 8px">✉</div>
+    <div style="font-size:12px;font-weight:900;text-align:center;margin-bottom:5px">メールを確認してください</div>
+    <div style="font-size:8.5px;color:#888;text-align:center;line-height:1.7;margin-bottom:12px">you@example.com に送信しました。<br>メール内のリンクをタップすると<br>自動的にログインされます。</div>
+    <div style="background:#F7F5FF;border-radius:8px;padding:8px 10px;margin-bottom:10px">
+      <div style="font-size:8.5px;color:#6D28D9;line-height:1.6">メールが届かない場合：<br>・迷惑メールフォルダを確認<br>・数分待ってから再送信</div>
+    </div>
+    <div class="bo" style="margin-top:0">再送信する</div>
+    <div style="font-size:8.5px;color:#7B3FC9;text-align:center;margin-top:8px">別のメールアドレスで登録</div>
+  </div>
+</div>
+<div class="lbl">メール認証待ち</div>
+<div class="note">コード入力不要・リンクのみ</div>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- NEW: 初回オンボーディング（5問）-->
+<!-- ============================================================ -->
+<div class="sec">初回オンボーディング（認証完了直後・1回のみ） <span class="new-badge">NEW</span></div>
+<div class="row">
+
+<!-- 問1 -->
+<div>
+<div class="pw">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:10px;color:#fff;font-weight:500">あなたについて教えてください</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb on">Q1/5</div><div class="sb">Q2/5</div><div class="sb">Q3/5</div><div class="sb">Q4/5</div><div class="sb">Q5/5</div></div>
+  <div class="ct">
+    <div style="display:flex;justify-content:center;gap:4px;margin:8px 0 12px">
+      <span class="prog-dot on"></span><span class="prog-dot"></span><span class="prog-dot"></span><span class="prog-dot"></span><span class="prog-dot"></span>
+    </div>
+    <div class="pbar"><div class="pfill" style="width:20%"></div></div>
+    <div class="q-card">
+      <div class="q-num">Q1</div>
+      <div class="q-text">フォロワーさんがあなたを選ぶ一番の理由はどれだと思いますか？</div>
+      <div class="q-opts">
+        <div class="q-opt on">🤝 「この人だから」という信頼や人柄</div>
+        <div class="q-opt">📊 実績・コスパ・結果が出せそう</div>
+        <div class="q-opt">✨ 新しい・かっこいい・権威がある</div>
+      </div>
+    </div>
+    <div class="bp">次の質問へ →</div>
+    <div style="text-align:center;margin-top:6px;font-size:8.5px;color:#aaa">スキップ（後からマイページで回答可）</div>
+  </div>
+</div>
+<div class="lbl">Q1 — 選ばれる理由</div>
+</div>
+
+<!-- 問3 -->
+<div>
+<div class="pw">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:10px;color:#fff;font-weight:500">あなたについて教えてください</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb">Q1/5</div><div class="sb">Q2/5</div><div class="sb on">Q3/5</div><div class="sb">Q4/5</div><div class="sb">Q5/5</div></div>
+  <div class="ct">
+    <div style="display:flex;justify-content:center;gap:4px;margin:8px 0 12px">
+      <span class="prog-dot on"></span><span class="prog-dot on"></span><span class="prog-dot on"></span><span class="prog-dot"></span><span class="prog-dot"></span>
+    </div>
+    <div class="pbar"><div class="pfill" style="width:60%"></div></div>
+    <div class="q-card">
+      <div class="q-num">Q3</div>
+      <div class="q-text">発信で大切にしていることは何ですか？（最も近いものを選択）</div>
+      <div class="q-opts">
+        <div class="q-opt">💬 親しみやすさ・共感・温かみ</div>
+        <div class="q-opt on">📈 数字・実績・具体的な成果</div>
+        <div class="q-opt">🔥 インパクト・話題性・見た目の強さ</div>
+      </div>
+    </div>
+    <div class="bp">次の質問へ →</div>
+    <div style="text-align:center;margin-top:6px;font-size:8.5px;color:#aaa">スキップ（後からマイページで回答可）</div>
+  </div>
+</div>
+<div class="lbl">Q3 — 発信で大切にすること</div>
+</div>
+
+<!-- 完了 -->
+<div>
+<div class="pw">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:10px;color:#fff;font-weight:500">あなたについて教えてください</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb">Q1〜Q4</div><div class="sb on">Q5/5 完了</div></div>
+  <div class="ct">
+    <div style="text-align:center;margin:16px 0 8px;font-size:32px">🎉</div>
+    <div style="font-size:13px;font-weight:900;text-align:center;margin-bottom:6px">ありがとうございます！</div>
+    <div style="font-size:8.5px;color:#888;text-align:center;line-height:1.7;margin-bottom:14px">あなたのタイプに合わせた<br>ストーリーズを生成します</div>
+    <div style="background:#F7F5FF;border-radius:9px;padding:9px 11px;margin-bottom:12px">
+      <div style="font-size:8px;color:#6D28D9;font-weight:700;margin-bottom:4px">あなたのタイプ</div>
+      <div style="font-size:12px;font-weight:900;color:#4C1D95">コスパ・実績訴求型</div>
+      <div style="font-size:8px;color:#6D28D9;margin-top:3px;line-height:1.5">数字・実績・具体的な成果でフォロワーの信頼を獲得するスタイルです</div>
+    </div>
+    <div style="background:#F7F5FF;border-radius:7px;padding:7px 9px;margin-bottom:12px">
+      <div style="font-size:8px;color:#888;line-height:1.6">AIが裏側で自動的に「権威性/実績」「口コミ」「見た目・テンション」の3要素をバランスよく織り込みます</div>
+    </div>
+    <div class="bp">ダッシュボードへ →</div>
+  </div>
+</div>
+<div class="lbl">オンボーディング完了</div>
+<div class="note">3分類をAIが自動で裏側に反映</div>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- グローバルナビ・メニュー（変更なし） -->
+<!-- ============================================================ -->
+<div class="sec">グローバルナビ・メニュー</div>
+<div class="row">
+
+<div>
+<div class="pw" style="min-height:280px">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:11px;color:#fff;font-weight:500">基本情報　STEP 1a</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb">HOME</div><div class="sb on">①基本情報</div><div class="sb">②ターゲット</div><div class="sb">③テンション</div></div>
+  <div class="ct" style="padding-top:6px">
+    <div style="font-size:8px;color:#aaa;margin-bottom:4px">通常画面のナビ（⌂ホームと≡メニューのみ）</div>
+    <div style="border:1px dashed #ddd;border-radius:8px;padding:8px;font-size:8.5px;color:#555;line-height:1.7">
+      ✅ ⌂ ホームに戻る<br>
+      ✅ ≡ メニューを開く<br>
+      ❌ ↩ 戻る（削除）<br>
+      ❌ ↪ 進む（削除）<br>
+      ❌ ⬇ DL（エディターのみ）
+    </div>
+    <div style="font-size:8px;color:#888;margin-top:8px">黒帯ナビには画面名を表示</div>
+    <div style="background:#111;border-radius:8px;padding:5px 8px;display:flex;gap:4px;margin-top:4px">
+      <div class="sb on">①基本情報</div>
+      <div class="sb">②ターゲット</div>
+      <div class="sb">③テンション…</div>
+    </div>
+  </div>
+</div>
+<div class="lbl">ナビ仕様（通常画面）</div>
+</div>
+
+<div>
+<div class="pw" style="overflow:visible;min-height:320px">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:11px;color:#fff;font-weight:500">Stories AI</span><span class="gi on" style="background:rgba(255,255,255,.2);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center">≡</span></div>
+  <div class="snav"><div class="sb on">HOME</div><div class="sb">STEP…</div></div>
+  <div class="menu-overlay">
+    <div style="background:linear-gradient(135deg,#00C9B1,#8B2FC9);height:7px;border-radius:7px 7px 0 0"></div>
+    <div style="padding:14px 14px 4px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:11px;font-weight:700">山田 花子</div>
+        <div style="font-size:8.5px;color:#888">you@example.com</div>
+      </div>
+      <div style="font-size:9px;background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:6px;font-weight:700">Pro</div>
+    </div>
+    <div style="height:1px;background:#f0f0f0;margin:8px 0"></div>
+    <div style="padding:0 14px">
+      <div style="padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:10px;font-weight:700;color:#333;display:flex;align-items:center;gap:8px"><span style="font-size:13px">📋</span>生成履歴</div>
+      <div style="padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:10px;font-weight:700;color:#333;display:flex;align-items:center;gap:8px"><span style="font-size:13px">👤</span>マイページ</div>
+      <div style="padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:10px;font-weight:700;color:#333;display:flex;align-items:center;gap:8px"><span style="font-size:13px">⚙</span>設定</div>
+      <div style="padding:9px 0;font-size:10px;font-weight:700;color:#E24B4A;display:flex;align-items:center;gap:8px"><span style="font-size:13px">↪</span>ログアウト</div>
+    </div>
+  </div>
+  <div style="height:200px"></div>
+</div>
+<div class="lbl">≡ メニュー画面</div>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- STEP 1a — 発信者情報（発信スタンス追加） -->
+<!-- ============================================================ -->
+<div class="sec">STEP 1a — 発信者情報（発信スタンス追加） <span class="new-badge">更新</span></div>
+<div class="row">
+
+<div>
+<div class="pw wide">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:10px;color:#fff;font-weight:500">基本情報　STEP 1a/2</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb">HOME</div><div class="sb on">①基本情報</div><div class="sb">②ターゲット</div><div class="sb">③…</div></div>
+  <div class="ct">
+    <div class="pbar"><div class="pfill" style="width:20%"></div></div>
+
+    <!-- 発信の目的 -->
+    <div class="sbox">
+      <div class="sh"><span class="si">🎯</span>発信の目的<span class="req">必須</span></div>
+      <div class="sb2">
+        <div>
+          <div class="fl">達成したいゴール</div>
+          <div class="chips"><div class="chip on">個別相談の申込</div><div class="chip">DM・LINE獲得</div><div class="chip">講座・コース販売</div><div class="chip">コンテンツ販売</div><div class="chip">EC・物販</div><div class="chip">ファン化</div></div>
+        </div>
+        <div>
+          <div class="fl">商材・サービス名<span class="opt">任意</span></div>
+          <input class="inp" placeholder="例：個別相談90分">
+        </div>
+        <div>
+          <div class="fl">生成日数（1〜30日）<span class="req">必須</span></div>
+          <div class="slider-row"><input type="range" class="slid" min="1" max="30" value="30"><span class="sv">30</span><span style="font-size:8px;color:#aaa">日</span></div>
+          <div style="background:#F7F5FF;border-radius:6px;padding:5px 7px;margin-top:4px;font-size:8px;color:#6D28D9;line-height:1.5">テキスト生成・画像合成・PNG保存はすべて無制限</div>
+          <div class="annot">※ 月間API¥500上限は内部制御（表示なし）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 発信者プロフィール -->
+    <div class="sbox">
+      <div class="sh"><span class="si">👤</span>発信者プロフィール</div>
+      <div class="sb2">
+        <div>
+          <div class="fl">発信ジャンル<span class="req">必須</span></div>
+          <select class="sel"><option>片付け・整理収納</option></select>
+        </div>
+        <div class="g2">
+          <div><div class="fl">年代</div><select class="sel"><option>30代後半</option></select></div>
+          <div><div class="fl">子ども</div><select class="sel"><option>2人</option></select></div>
+        </div>
+        <div>
+          <div class="fl">強み・自分らしさ</div>
+          <textarea class="ta" placeholder="元お片付け苦手だったワーキングマザー…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: 発信スタンス -->
+    <div class="sbox">
+      <div class="sh"><span class="si">💬</span>発信のスタンス<span class="req">必須</span><span class="new-badge">NEW</span></div>
+      <div class="sb2">
+        <div>
+          <div class="fl">フォロワーへの立ち位置</div>
+          <div style="display:flex;gap:5px;margin-top:4px">
+            <div class="stance-chip">🤝<br><span style="font-size:7.5px">ママ友<br>（共感型）</span></div>
+            <div class="stance-chip on">🌟<br><span style="font-size:7.5px">先輩<br>（体験型）</span></div>
+            <div class="stance-chip">🎓<br><span style="font-size:7.5px">指導者<br>（専門家型）</span></div>
+          </div>
+          <div style="font-size:8px;color:#888;margin-top:5px;line-height:1.5">AIの語り口・目線が変わります。先輩＝「私もかつて…」、指導者＝「〜することが重要です」</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bp">次へ</div>
+  </div>
+</div>
+<div class="lbl">STEP 1a 発信者情報（更新）</div>
+<div class="note">発信スタンス選択を追加</div>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- STEP 1b — ターゲット情報（商品情報・インポート・対象外追加） -->
+<!-- ============================================================ -->
+<div class="sec">STEP 1b — ターゲット（ペルソナ）情報（大幅追加） <span class="new-badge">更新</span></div>
+<div class="row">
+
+<!-- 既存部分（修正版） -->
+<div>
+<div class="pw wide">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:10px;color:#fff;font-weight:500">基本情報　STEP 1b/2</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb">HOME</div><div class="sb">①基本情報</div><div class="sb on">②ターゲット</div><div class="sb">③…</div></div>
+  <div class="ct">
+    <div class="pbar"><div class="pfill" style="width:40%"></div></div>
+
+    <!-- ターゲット（ペルソナ）← 見出し変更 -->
+    <div class="sbox">
+      <div class="sh"><span class="si">🎯</span>ターゲット（ペルソナ）<span class="req">必須</span></div>
+      <div class="sb2">
+        <div><div class="fl">メインターゲット<span class="req">必須</span></div><input class="inp v" value="30代後半〜40代前半のママ"></div>
+        <div><div class="fl">サブターゲット<span class="opt">任意</span></div><input class="inp" placeholder="例：産育休中の方"></div>
+      </div>
+    </div>
+
+    <!-- 悩み・理想・理由（1件目必須） -->
+    <div class="sbox">
+      <div class="sh"><span class="si">💬</span>悩み・理想・理由<span class="req">必須</span></div>
+      <div class="sb2">
+        <div>
+          <div class="fl">表の悩み（口にしていること）<span style="font-size:7px;color:#DC2626;margin-left:3px">1件目必須</span></div>
+          <div class="trio">
+            <input class="ti on req-border" value="片付かない" style="border-color:#7B3FC9">
+            <input class="ti" placeholder="物多すぎ">
+            <input class="ti" placeholder="続かない">
+          </div>
+        </div>
+        <div>
+          <div class="fl">理想の未来<span style="font-size:7px;color:#DC2626;margin-left:3px">1件目必須</span></div>
+          <div class="trio">
+            <input class="ti on" value="帰宅が楽しみ" style="border-color:#7B3FC9">
+            <input class="ti" placeholder="怒らない">
+            <input class="ti" placeholder="時間余裕">
+          </div>
+        </div>
+        <div>
+          <div class="fl">表向きの理由（口にする言い訳）<span style="font-size:7px;color:#DC2626;margin-left:3px">1件目必須</span></div>
+          <div class="trio">
+            <input class="ti on" value="時間がない" style="border-color:#7B3FC9">
+            <input class="ti" placeholder="やる気ない">
+            <input class="ti" placeholder="方法不明">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 本音インサイト -->
+    <div class="ib">
+      <div class="il">本音インサイト <span style="font-size:7px;background:#FEF3C7;color:#92400E;padding:1px 4px;border-radius:3px">AIへの隠し入力</span></div>
+      <textarea class="ta" style="background:#F5F3FF;border-color:#DDD6FE;min-height:34px" placeholder="例：私だけできていない気がして惨め…"></textarea>
+    </div>
+    <div class="aib"><span style="font-size:13px">🌀</span>AIにインサイトを提案させる</div>
+
+    <div class="bp" style="margin-top:8px">次へ → 商品情報・外部情報を入力</div>
+    <div class="bo" style="margin-top:0">← 戻る</div>
+  </div>
+</div>
+<div class="lbl">STEP 1b-1 ターゲット（ペルソナ）</div>
+<div class="note">見出し変更・1件目必須に</div>
+</div>
+
+<!-- NEW: 商品情報・外部インポート・対象外 -->
+<div>
+<div class="pw wide">
+  <div class="gnav"><span class="gi">⌂</span><span style="font-size:10px;color:#fff;font-weight:500">基本情報　STEP 1b/2</span><span class="gi">≡</span></div>
+  <div class="snav"><div class="sb">HOME</div><div class="sb">①基本情報</div><div class="sb on">②ターゲット</div><div class="sb">③…</div></div>
+  <div class="ct">
+    <div class="pbar"><div class="pfill" style="width:45%"></div></div>
+
+    <!-- NEW: 商品情報（訴求ポイント） -->
+    <div class="sbox">
+      <div class="sh"><span class="si">📦</span>商品情報（訴求ポイント）<span class="new-badge">NEW</span></div>
+      <div class="sb2">
+        <div>
+          <div class="fl">どんな商品・サービスですか？<span class="req">必須</span></div>
+          <textarea class="ta" placeholder="例：子育て中のママ向けオンライン整理収納サポート3ヶ月プログラム"></textarea>
+        </div>
+        <div>
+          <div class="fl">おすすめポイント（他との違い）</div>
+          <textarea class="ta" placeholder="例：週1回の個別フィードバック付き。子どもがいても続けやすい15分ルーティン設計"></textarea>
+        </div>
+        <div>
+          <div class="fl">自分がいいと思ったポイント</div>
+          <textarea class="ta" style="min-height:34px" placeholder="例：実際に自分が3ヶ月で家の雰囲気が変わった体験がある"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: 外部情報インポート -->
+    <div class="sbox">
+      <div class="sh"><span class="si">📎</span>外部情報インポート<span class="opt">任意</span><span class="new-badge">NEW</span></div>
+      <div class="sb2">
+        <div>
+          <div class="fl">LP・資料・アンケートなどをAIに読み込ませる</div>
+          <div style="display:flex;gap:4px;margin-top:4px;margin-bottom:7px">
+            <div class="import-tab on">🔗 URL</div>
+            <div class="import-tab">📝 テキスト</div>
+            <div class="import-tab">📄 PDF</div>
+          </div>
+          <input class="inp" placeholder="https://your-lp.com または資料URLを貼り付け">
+          <div style="font-size:8px;color:#aaa;margin-top:4px;line-height:1.5">活用例：アフィリLPのURLを貼る / 代理店から届いた案内をペースト / 個別相談前アンケートのPDFを添付</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: 見込み客の対象外設定 -->
+    <div class="sbox">
+      <div class="sh"><span class="si">🚫</span>見込み客の対象外設定<span class="opt">任意</span><span class="new-badge">NEW</span></div>
+      <div class="sb2">
+        <div>
+          <div class="fl">この人には合わない・必要ないと伝える条件</div>
+          <textarea class="ta" placeholder="例：&#10;・完全在宅で家の広さに余裕がある方&#10;・すでに片付けが得意な方&#10;・今すぐ変えたいという気持ちがない方"></textarea>
+          <div style="font-size:8px;color:#6D28D9;margin-top:4px;line-height:1.5;background:#F5F3FF;padding:5px 7px;border-radius:5px">AIがストーリーズに「あなたには合わないかもしれない」と正直に伝えるコピーを生成。質の低いリード流入を防ぎます。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bp" style="margin-top:8px">次へ → STEP 2 スタイル選択</div>
+    <div class="bo" style="margin-top:0">← 戻る</div>
+  </div>
+</div>
+<div class="lbl">STEP 1b-2 商品情報・外部インポート・対象外</div>
+<div class="note">すべてNEW追加項目</div>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- 変更サマリー -->
+<!-- ============================================================ -->
+<div class="sec">変更サマリー</div>
+<div style="background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:11px;line-height:1.9;color:#444;border:1px solid #eee">
+  <div style="font-weight:700;color:#7B3FC9;margin-bottom:8px">PDFより追加・変更した要件</div>
+  <div>✅ <b>初回オンボーディング5問</b>（認証直後・1回のみ）→ 3分類に分類してAIプロンプトに反映</div>
+  <div>✅ <b>3分類を裏側の仕組みに</b>：権威性/実績・口コミ・見た目テンションをバランスよく自動配分</div>
+  <div>✅ <b>発信のスタンス選択</b>（STEP 1aに追加）：ママ友・先輩・指導者 → AIの語り口が変わる</div>
+  <div>✅ <b>商品情報（訴求ポイント）</b>（STEP 1bに追加）：商品概要・ポイント・自分の実感</div>
+  <div>✅ <b>外部情報インポート欄</b>（STEP 1bに追加）：URL・テキスト・PDFの3方式</div>
+  <div>✅ <b>見込み客の対象外設定</b>（STEP 1bに追加）：正直に伝えるコピーで質の低いリードを除外</div>
+  <div>✅ <b>ターゲット設定</b> → <b>ターゲット（ペルソナ）</b>に見出し変更</div>
+  <div>✅ <b>悩み・理想・理由の1件目を必須</b>入力に変更（2件目以降は任意）</div>
+  <div>✅ <b>メール認証後の遷移</b>：ダッシュボード直行 → オンボーディング5問 → ダッシュボード</div>
+</div>

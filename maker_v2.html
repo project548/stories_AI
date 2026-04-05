@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stories 画像メーカー</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif; background:#FAF7F4; color:#3D2B35; min-height:100vh; display:flex; flex-direction:column; }
+
+.header { background:#fff; border-bottom:1px solid #E8D8DC; padding:11px 18px; display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.header-title { font-size:15px; font-weight:700; color:#8C5568; }
+
+.tpl-bar { background:#fff; border-bottom:1px solid #E8D8DC; padding:10px 18px; flex-shrink:0; }
+.bar-label { font-size:10px; font-weight:700; color:#9B8490; text-transform:uppercase; letter-spacing:.07em; margin-bottom:8px; }
+.tpl-list { display:flex; gap:12px; flex-wrap:wrap; }
+.tpl-item { display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; }
+.tpl-canvas { border-radius:5px; border:2.5px solid transparent; display:block; transition:border-color .15s; }
+.tpl-item.active .tpl-canvas { border-color:#C9879A; }
+.tpl-name { font-size:10px; color:#9B8490; font-weight:600; }
+.tpl-item.active .tpl-name { color:#C9879A; font-weight:700; }
+
+.main { display:grid; grid-template-columns:1fr 320px; flex:1; min-height:0; }
+
+.preview-wrap { padding:18px; display:flex; flex-direction:column; align-items:center; gap:8px; overflow-y:auto; }
+#preview { border-radius:10px; box-shadow:0 6px 28px rgba(0,0,0,.25); height:600px; width:auto; display:block; touch-action:none; cursor:crosshair; user-select:none; }
+#preview.hover  { cursor:grab; }
+#preview.drag   { cursor:grabbing; }
+.preview-hint { font-size:11px; color:#C8B4BB; }
+.sel-hint { font-size:11px; color:#C9879A; font-weight:600; background:#FDF0F3; padding:4px 10px; border-radius:6px; display:none; }
+
+.controls { background:#fff; border-left:1px solid #E8D8DC; display:flex; flex-direction:column; min-height:0; }
+
+.tabs { display:flex; border-bottom:1px solid #E8D8DC; flex-shrink:0; }
+.tab { flex:1; padding:10px 4px; font-size:11px; font-weight:700; color:#9B8490; text-align:center; cursor:pointer; border-bottom:2.5px solid transparent; transition:all .15s; }
+.tab.active { color:#C9879A; border-bottom-color:#C9879A; }
+
+.tab-body { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px; }
+.tab-pane { display:none; flex-direction:column; gap:10px; }
+.tab-pane.active { display:flex; }
+
+.field label { display:block; font-size:10px; font-weight:700; color:#9B8490; text-transform:uppercase; letter-spacing:.07em; margin-bottom:4px; }
+.field input[type=text], .field textarea {
+  width:100%; background:#FAF7F4; border:0.5px solid #E8D8DC; border-radius:8px;
+  padding:8px 10px; font-size:13px; color:#3D2B35; font-family:inherit; outline:none; transition:border-color .15s;
+}
+.field input[type=text]:focus, .field textarea:focus { border-color:#C9879A; }
+.field textarea { resize:vertical; min-height:72px; line-height:1.6; }
+
+.el-section { border:0.5px solid #E8D8DC; border-radius:10px; padding:10px 12px; }
+.el-head { font-size:11px; font-weight:700; color:#8C5568; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.el-head .sel-dot { width:8px; height:8px; border-radius:50%; background:#E8D8DC; flex-shrink:0; }
+.el-head.selected .sel-dot { background:#C9879A; }
+
+.srow { display:flex; align-items:center; gap:6px; margin-top:4px; }
+.srow-label { font-size:10px; font-weight:700; color:#9B8490; min-width:32px; }
+.srow input[type=range] { flex:1; accent-color:#C9879A; cursor:pointer; }
+.srow-val { font-size:10px; color:#9B8490; min-width:38px; text-align:right; }
+
+.divider { height:1px; background:#E8D8DC; }
+
+.upload-btn { width:100%; padding:9px; border-radius:8px; border:1.5px dashed #E8D8DC; background:#FAF7F4; color:#9B8490; font-size:13px; font-weight:600; cursor:pointer; text-align:center; transition:all .15s; font-family:inherit; }
+.upload-btn:hover { border-color:#C9879A; color:#8C5568; background:#FDF0F3; }
+.photo-thumb { width:100%; height:60px; object-fit:cover; border-radius:8px; display:none; margin-top:6px; }
+.clear-link { font-size:11px; color:#C9879A; cursor:pointer; text-decoration:underline; display:none; margin-top:3px; }
+
+/* Arrow palette */
+.arrow-palette { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+.arrow-btn { border:1.5px solid #E8D8DC; border-radius:8px; background:#111; cursor:pointer; padding:0; overflow:hidden; transition:border-color .15s; aspect-ratio:1; }
+.arrow-btn:hover { border-color:#C9879A; }
+.arrow-btn canvas { display:block; width:100%; height:100%; }
+.arrow-name { font-size:9px; color:#9B8490; text-align:center; margin-top:3px; }
+
+/* Overlay/Arrow card */
+.ov-card { border:0.5px solid #E8D8DC; border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:5px; }
+.ov-card.selected { border-color:#C9879A; background:#FDF9FA; }
+.ov-head { display:flex; align-items:center; gap:8px; }
+.ov-thumb { width:40px; height:40px; object-fit:cover; border-radius:6px; flex-shrink:0; }
+.ov-thumb-canvas { width:40px; height:40px; border-radius:6px; flex-shrink:0; background:#111; }
+.ov-name { font-size:11px; color:#6B4F5A; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ov-del { background:none; border:none; color:#D8C0C8; font-size:16px; cursor:pointer; padding:0; line-height:1; }
+.ov-del:hover { color:#C9879A; }
+.color-row { display:flex; align-items:center; gap:6px; margin-top:2px; }
+.color-row label { font-size:10px; font-weight:700; color:#9B8490; text-transform:uppercase; }
+.color-row input[type=color] { width:32px; height:24px; border:none; border-radius:4px; cursor:pointer; padding:0; }
+
+.bottom-bar { padding:12px 14px; border-top:1px solid #E8D8DC; flex-shrink:0; }
+.dl-btn { width:100%; padding:11px; border-radius:8px; border:none; background:#C9879A; color:#fff; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; }
+.dl-btn:hover { background:#B5728A; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:17px">📱</span>
+  <span class="header-title">Stories 画像メーカー</span>
+</div>
+
+<div class="tpl-bar">
+  <div class="bar-label">テンプレートを選択</div>
+  <div class="tpl-list" id="tplList"></div>
+</div>
+
+<div class="main">
+  <div class="preview-wrap">
+    <canvas id="preview" width="1080" height="1920"></canvas>
+    <div class="preview-hint">ドラッグで位置を調整できます</div>
+    <div class="sel-hint" id="selHint">選択中：</div>
+  </div>
+
+  <div class="controls">
+    <div class="tabs">
+      <div class="tab active" data-tab="text">テキスト</div>
+      <div class="tab" data-tab="bg">背景</div>
+      <div class="tab" data-tab="overlay">装飾</div>
+    </div>
+
+    <div class="tab-body">
+
+      <!-- TEXT -->
+      <div class="tab-pane active" id="pane-text">
+        <div class="el-section" id="sec-h1">
+          <div class="el-head" id="head-h1"><span class="sel-dot"></span>H1 — メイン見出し</div>
+          <div class="field"><input type="text" id="h1" value="収入は上がってないのに"></div>
+          <div class="srow"><span class="srow-label">角度</span><input type="range" id="h1a" min="-45" max="45" step="0.5" value="0"><span class="srow-val" id="h1a-v">0°</span></div>
+        </div>
+        <div class="el-section" id="sec-h2">
+          <div class="el-head" id="head-h2"><span class="sel-dot"></span>H2 — サブ見出し</div>
+          <div class="field"><input type="text" id="h2" value="物価は上がってく"></div>
+          <div class="srow"><span class="srow-label">角度</span><input type="range" id="h2a" min="-45" max="45" step="0.5" value="0"><span class="srow-val" id="h2a-v">0°</span></div>
+        </div>
+        <div class="el-section" id="sec-p">
+          <div class="el-head" id="head-p"><span class="sel-dot"></span>P — 本文</div>
+          <div class="field"><textarea id="p">厚生労働省の調査によると、実質賃金は3年連続でマイナスを記録。消費者物価指数は前年比＋3.2%で上昇が続く。家計への圧迫が深刻化しており、政府は対策を検討中とされるが、具体的な支援策はまだ示されていない状況だ。</textarea></div>
+          <div class="srow"><span class="srow-label">角度</span><input type="range" id="pa" min="-45" max="45" step="0.5" value="0"><span class="srow-val" id="pa-v">0°</span></div>
+        </div>
+        <div class="el-section" id="sec-h3">
+          <div class="el-head" id="head-h3"><span class="sel-dot"></span>H3 — 強調の一文</div>
+          <div class="field"><input type="text" id="h3" value="今は生きていても、"></div>
+          <div class="srow"><span class="srow-label">角度</span><input type="range" id="h3a" min="-45" max="45" step="0.5" value="0"><span class="srow-val" id="h3a-v">0°</span></div>
+        </div>
+      </div>
+
+      <!-- BG -->
+      <div class="tab-pane" id="pane-bg">
+        <input type="file" id="bgInput" accept="image/*" style="display:none">
+        <button class="upload-btn" onclick="document.getElementById('bgInput').click()">＋ 背景写真を選択</button>
+        <img id="bgThumb" class="photo-thumb">
+        <span id="bgClear" class="clear-link" onclick="clearBg()">× 削除</span>
+        <div class="srow"><span class="srow-label">明度</span>   <input type="range" id="bgAlpha" min="0" max="100" value="65"><span class="srow-val" id="bgAlpha-v">65%</span></div>
+        <div class="srow"><span class="srow-label">スケール</span><input type="range" id="bgScale" min="50" max="300" value="100"><span class="srow-val" id="bgScale-v">100%</span></div>
+        <div class="srow"><span class="srow-label">X</span>      <input type="range" id="bgOx" min="-540" max="540" value="0"><span class="srow-val" id="bgOx-v">0</span></div>
+        <div class="srow"><span class="srow-label">Y</span>      <input type="range" id="bgOy" min="-960" max="960" value="0"><span class="srow-val" id="bgOy-v">0</span></div>
+      </div>
+
+      <!-- OVERLAY / ARROWS -->
+      <div class="tab-pane" id="pane-overlay">
+        <div class="bar-label">矢印を追加</div>
+        <div class="arrow-palette" id="arrowPalette"></div>
+        <div class="divider"></div>
+        <input type="file" id="ovInput" accept="image/*" multiple style="display:none">
+        <button class="upload-btn" onclick="document.getElementById('ovInput').click()">＋ オーバーレイ画像を追加</button>
+        <div id="ovList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+
+    </div>
+
+    <div class="bottom-bar">
+      <button class="dl-btn" onclick="downloadImage()">↓ PNG でダウンロード</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ───────────────────────────────────────────
+//  Constants
+// ───────────────────────────────────────────
+const CW = 1080, CH = 1920;
+const FONT = '"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif';
+const TPAD = 20, TRAD = 28;
+const TW = 108, TH = 192;
+
+// ───────────────────────────────────────────
+//  Templates
+// ───────────────────────────────────────────
+const TEMPLATES = [
+  { name:'スタンダード', els:[
+    {t:'h1',x:60,  y:200, s:86,w:'900',a:'left',  mw:960},
+    {t:'h2',x:60,  y:328, s:60,w:'700',a:'left',  mw:960},
+    {t:'p', x:60,  y:440, s:40,w:'400',a:'left',  mw:960,lh:68},
+    {t:'h3',x:60,  y:856, s:56,w:'700',a:'left',  mw:960},
+  ]},
+  { name:'トップ集中', els:[
+    {t:'h1',x:60,  y:180, s:96,w:'900',a:'left',  mw:960},
+    {t:'h2',x:60,  y:320, s:56,w:'700',a:'left',  mw:960},
+    {t:'p', x:60,  y:420, s:38,w:'400',a:'left',  mw:960,lh:62},
+    {t:'h3',x:60,  y:740, s:54,w:'900',a:'left',  mw:960},
+  ]},
+  { name:'ボトム強調', els:[
+    {t:'h1',x:60,  y:180, s:92,w:'900',a:'left',  mw:960},
+    {t:'h2',x:60,  y:1180,s:56,w:'700',a:'left',  mw:960},
+    {t:'p', x:60,  y:1290,s:38,w:'400',a:'left',  mw:960,lh:62},
+    {t:'h3',x:60,  y:1680,s:76,w:'900',a:'left',  mw:960},
+  ]},
+  { name:'センター', els:[
+    {t:'h1',x:540, y:620, s:86,w:'900',a:'center',mw:960},
+    {t:'h2',x:540, y:748, s:58,w:'700',a:'center',mw:960},
+    {t:'p', x:540, y:860, s:38,w:'400',a:'center',mw:900,lh:64},
+    {t:'h3',x:540, y:1268,s:56,w:'700',a:'center',mw:960},
+  ]},
+  { name:'スプリット', els:[
+    {t:'h1',x:60,  y:180, s:96,w:'900',a:'left',  mw:960},
+    {t:'h2',x:60,  y:326, s:60,w:'700',a:'left',  mw:960},
+    {t:'p', x:60,  y:1060,s:40,w:'400',a:'left',  mw:960,lh:66},
+    {t:'h3',x:60,  y:1700,s:82,w:'900',a:'left',  mw:960},
+  ]},
+];
+
+// ───────────────────────────────────────────
+//  Arrow definitions
+// ───────────────────────────────────────────
+const ARROW_DEFS = [
+  { name:'直線 →' },
+  { name:'両矢印 ↔' },
+  { name:'ブロック ▶' },
+  { name:'カーブ ↩' },
+  { name:'上向き ↑' },
+];
+
+function drawArrowShape(ctx, idx, size, color) {
+  const s = size / 2;
+  ctx.save();
+  ctx.strokeStyle = color; ctx.fillStyle = color;
+  ctx.lineWidth = Math.max(2, size * 0.1);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  switch(idx) {
+    case 0: // →
+      ctx.beginPath(); ctx.moveTo(-s*.8,0); ctx.lineTo(s*.35,0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(s,0); ctx.lineTo(s*.3,-s*.4); ctx.lineTo(s*.3,s*.4); ctx.closePath(); ctx.fill();
+      break;
+    case 1: // ↔
+      ctx.beginPath(); ctx.moveTo(-s*.3,0); ctx.lineTo(s*.3,0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(s,0); ctx.lineTo(s*.3,-s*.4); ctx.lineTo(s*.3,s*.4); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-s,0); ctx.lineTo(-s*.3,-s*.4); ctx.lineTo(-s*.3,s*.4); ctx.closePath(); ctx.fill();
+      break;
+    case 2: // ▶ block
+      ctx.beginPath();
+      ctx.moveTo(-s*.9,-s*.35); ctx.lineTo(s*.1,-s*.35);
+      ctx.lineTo(s*.1,-s*.65); ctx.lineTo(s*.9,0);
+      ctx.lineTo(s*.1,s*.65); ctx.lineTo(s*.1,s*.35);
+      ctx.lineTo(-s*.9,s*.35); ctx.closePath(); ctx.fill();
+      break;
+    case 3: // ↩ curve
+      ctx.beginPath();
+      ctx.moveTo(s*.8,-s*.2);
+      ctx.bezierCurveTo(s*.8,s*.6,-s*.8,s*.6,-s*.8,0);
+      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-s*.8,0); ctx.lineTo(-s*.3,-s*.4); ctx.lineTo(-s*.2,s*.15); ctx.closePath(); ctx.fill();
+      break;
+    case 4: // ↑
+      ctx.beginPath(); ctx.moveTo(0,s*.8); ctx.lineTo(0,-s*.3); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,-s); ctx.lineTo(-s*.4,-s*.3); ctx.lineTo(s*.4,-s*.3); ctx.closePath(); ctx.fill();
+      break;
+  }
+  ctx.restore();
+}
+
+// ───────────────────────────────────────────
+//  State
+// ───────────────────────────────────────────
+const state = {
+  tplIdx: 0,
+  elProps: {
+    h1:{x:0,y:0,angle:0}, h2:{x:0,y:0,angle:0},
+    p: {x:0,y:0,angle:0}, h3:{x:0,y:0,angle:0},
+  },
+  bg: { img:null, alpha:0.65, scale:1, ox:0, oy:0 },
+  overlays: [],
+  ovNextId: 0,
+  selected: null, // { kind:'text'|'overlay', key:'h1'|id }
+};
+
+// Hit areas computed each render
+let hitAreas = [];
+
+// ───────────────────────────────────────────
+//  Drawing helpers
+// ───────────────────────────────────────────
+const measureCtx = document.createElement('canvas').getContext('2d');
+
+function roundRect(ctx, x, y, w, h, r) {
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+function wrapText(text, maxW, font) {
+  measureCtx.font = font;
+  const lines = []; let line = '';
+  for (const ch of text) {
+    const t = line + ch;
+    if (measureCtx.measureText(t).width > maxW && line) { lines.push(line); line = ch; }
+    else line = t;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function drawLine(ctx, text, el, absX, absY, angle) {
+  if (!text) return null;
+  const font = `${el.w} ${el.s}px ${FONT}`;
+  ctx.font = font; ctx.textBaseline = 'top';
+  const tw = ctx.measureText(text).width;
+  const bx = el.a === 'center' ? absX - tw/2 : absX;
+  const cx = bx + tw/2, cy = absY + el.s/2;
+
+  ctx.save();
+  if (angle) { ctx.translate(cx,cy); ctx.rotate(angle*Math.PI/180); ctx.translate(-cx,-cy); }
+  roundRect(ctx, bx-TPAD, absY-TPAD, tw+TPAD*2, el.s+TPAD*2, TRAD);
+  ctx.fillStyle='white'; ctx.fill();
+  ctx.fillStyle='#111'; ctx.textAlign=el.a;
+  ctx.fillText(text, absX, absY);
+  ctx.restore();
+
+  return { x:bx-TPAD, y:absY-TPAD, w:tw+TPAD*2, h:el.s+TPAD*2, cx, cy };
+}
+
+function drawPara(ctx, text, el, absX, absY, angle) {
+  if (!text) return null;
+  const font = `${el.w} ${el.s}px ${FONT}`;
+  const lines = wrapText(text, el.mw, font);
+  let maxW = 0;
+  measureCtx.font = font;
+  lines.forEach(l => { maxW = Math.max(maxW, measureCtx.measureText(l).width); });
+
+  lines.forEach((line, i) => drawLine(ctx, line, el, absX, absY + i*el.lh, angle));
+
+  const bx = el.a === 'center' ? absX - maxW/2 : absX;
+  const totalH = (lines.length-1)*el.lh + el.s + TPAD*2;
+  return { x:bx-TPAD, y:absY-TPAD, w:maxW+TPAD*2, h:totalH, cx:bx+maxW/2, cy:absY+totalH/2 };
+}
+
+function drawSelectionBox(ctx, bounds, angle) {
+  ctx.save();
+  ctx.translate(bounds.cx, bounds.cy);
+  ctx.rotate(angle * Math.PI/180);
+  ctx.strokeStyle = '#C9879A'; ctx.lineWidth = 5;
+  ctx.setLineDash([18, 9]);
+  ctx.strokeRect(-bounds.w/2-8, -bounds.h/2-8, bounds.w+16, bounds.h+16);
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+// ───────────────────────────────────────────
+//  Render
+// ───────────────────────────────────────────
+function render(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, CW, CH);
+  hitAreas = [];
+
+  // BG
+  ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, CW, CH);
+  const bg = state.bg;
+  if (bg.img) {
+    const ir = bg.img.naturalWidth/bg.img.naturalHeight, cr = CW/CH;
+    let dw,dh,dx,dy;
+    if(ir>cr){dh=CH*bg.scale;dw=dh*ir;}else{dw=CW*bg.scale;dh=dw/ir;}
+    dx=(CW-dw)/2+bg.ox; dy=(CH-dh)/2+bg.oy;
+    ctx.save(); ctx.globalAlpha=bg.alpha; ctx.drawImage(bg.img,dx,dy,dw,dh); ctx.restore();
+  }
+
+  // Overlays (images + arrows) — below text
+  for (const ov of state.overlays) {
+    let ow, oh;
+    ctx.save();
+    ctx.translate(ov.x, ov.y);
+    ctx.rotate(ov.angle * Math.PI/180);
+    if (ov.type === 'image' && ov.img) {
+      ow = ov.img.naturalWidth * ov.scale;
+      oh = ov.img.naturalHeight * ov.scale;
+      ctx.drawImage(ov.img, -ow/2, -oh/2, ow, oh);
+    } else if (ov.type === 'arrow') {
+      const arrowSize = 220 * ov.scale;
+      ow = oh = arrowSize;
+      drawArrowShape(ctx, ov.arrowIdx, arrowSize, ov.color);
+    }
+    ctx.restore();
+    if (ow && oh) {
+      hitAreas.push({ kind:'overlay', id:ov.id, cx:ov.x, cy:ov.y, w:ow, h:oh, angle:ov.angle });
+    }
+  }
+
+  // Text elements — on top
+  const tpl = TEMPLATES[state.tplIdx];
+  const texts = getTexts();
+  for (const el of tpl.els) {
+    const txt = texts[el.t]; if (!txt) continue;
+    const p = state.elProps[el.t];
+    let b;
+    if (el.t === 'p') b = drawPara(ctx, txt, el, p.x, p.y, p.angle);
+    else              b = drawLine(ctx, txt, el, p.x, p.y, p.angle);
+    if (b) hitAreas.push({ kind:'text', key:el.t, cx:b.cx, cy:b.cy, w:b.w, h:b.h, angle:p.angle });
+  }
+
+  // Selection highlight
+  if (state.selected) {
+    const hit = hitAreas.find(h =>
+      h.kind === state.selected.kind &&
+      (h.key === state.selected.key || h.id === state.selected.id)
+    );
+    if (hit) drawSelectionBox(ctx, hit, hit.angle);
+  }
+}
+
+// ───────────────────────────────────────────
+//  Hit testing
+// ───────────────────────────────────────────
+function hitTest(cx, cy, pw, ph, angle, px, py) {
+  const cos = Math.cos(-angle * Math.PI/180);
+  const sin = Math.sin(-angle * Math.PI/180);
+  const dx = px - cx, dy = py - cy;
+  const lx = dx*cos - dy*sin, ly = dx*sin + dy*cos;
+  return Math.abs(lx) <= pw/2+10 && Math.abs(ly) <= ph/2+10;
+}
+
+function findHit(px, py) {
+  for (let i = hitAreas.length-1; i >= 0; i--) {
+    const h = hitAreas[i];
+    if (hitTest(h.cx, h.cy, h.w, h.h, h.angle, px, py)) return h;
+  }
+  return null;
+}
+
+// ───────────────────────────────────────────
+//  Canvas drag (mouse + touch)
+// ───────────────────────────────────────────
+const cv = document.getElementById('preview');
+const dragState = { active:false, item:null, startX:0, startY:0, itemStartX:0, itemStartY:0, moved:false };
+
+function canvasXY(e) {
+  const rect = cv.getBoundingClientRect();
+  const src = e.touches ? e.touches[0] : e;
+  return {
+    x: (src.clientX - rect.left)  * (CW / rect.width),
+    y: (src.clientY - rect.top)   * (CH / rect.height),
+  };
+}
+
+function getItemPos(item) {
+  if (item.kind === 'text') return { ...state.elProps[item.key] };
+  const ov = state.overlays.find(o => o.id === item.id);
+  return ov ? { x:ov.x, y:ov.y } : null;
+}
+
+function setItemPos(item, x, y) {
+  if (item.kind === 'text') {
+    state.elProps[item.key].x = Math.round(x);
+    state.elProps[item.key].y = Math.round(y);
+    syncAngleSlider(item.key);
+  } else {
+    const ov = state.overlays.find(o => o.id === item.id);
+    if (ov) { ov.x = Math.round(x); ov.y = Math.round(y); }
+  }
+}
+
+function onPointerDown(e) {
+  e.preventDefault();
+  const {x,y} = canvasXY(e);
+  const hit = findHit(x, y);
+  if (hit) {
+    state.selected = hit.kind === 'text' ? { kind:'text', key:hit.key } : { kind:'overlay', id:hit.id };
+    const pos = getItemPos(state.selected);
+    dragState.active = true; dragState.item = state.selected; dragState.moved = false;
+    dragState.startX = x; dragState.startY = y;
+    dragState.itemStartX = pos.x; dragState.itemStartY = pos.y;
+    cv.classList.add('drag');
+    updateSelectionUI();
+  } else {
+    state.selected = null;
+    updateSelectionUI();
+  }
+  render(cv);
+}
+
+function onPointerMove(e) {
+  e.preventDefault();
+  const {x,y} = canvasXY(e);
+  if (dragState.active && dragState.item) {
+    const dx = x - dragState.startX, dy = y - dragState.startY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragState.moved = true;
+    setItemPos(dragState.item, dragState.itemStartX + dx, dragState.itemStartY + dy);
+    render(cv);
+  } else {
+    const hit = findHit(x, y);
+    cv.className = hit ? 'hover' : '';
+  }
+}
+
+function onPointerUp(e) {
+  if (dragState.active) {
+    cv.classList.remove('drag');
+    dragState.active = false;
+    if (dragState.moved) renderOverlayList();
+    update(false);
+  }
+}
+
+cv.addEventListener('mousedown',  onPointerDown, {passive:false});
+cv.addEventListener('mousemove',  onPointerMove, {passive:false});
+cv.addEventListener('mouseup',    onPointerUp);
+cv.addEventListener('touchstart', onPointerDown, {passive:false});
+cv.addEventListener('touchmove',  onPointerMove, {passive:false});
+cv.addEventListener('touchend',   onPointerUp);
+
+// ───────────────────────────────────────────
+//  Selection UI sync
+// ───────────────────────────────────────────
+function updateSelectionUI() {
+  ['h1','h2','p','h3'].forEach(k => {
+    document.getElementById('head-'+k)?.classList.remove('selected');
+  });
+  const hint = document.getElementById('selHint');
+  if (!state.selected) { hint.style.display='none'; return; }
+  if (state.selected.kind === 'text') {
+    document.getElementById('head-'+state.selected.key)?.classList.add('selected');
+    hint.style.display = 'block';
+    hint.textContent = '選択中: ' + state.selected.key.toUpperCase();
+  } else {
+    hint.style.display = 'block';
+    const ov = state.overlays.find(o => o.id === state.selected.id);
+    hint.textContent = '選択中: ' + (ov?.type === 'arrow' ? '矢印' : '画像');
+  }
+  document.querySelectorAll('.ov-card').forEach(c => c.classList.remove('selected'));
+  if (state.selected.kind === 'overlay') {
+    document.getElementById('ov-'+state.selected.id)?.classList.add('selected');
+  }
+}
+
+function syncAngleSlider(key) {
+  const el = document.getElementById(key+'a');
+  if (el) { el.value = state.elProps[key].angle; updateLabel(el); }
+}
+
+// ───────────────────────────────────────────
+//  Arrow palette
+// ───────────────────────────────────────────
+function buildArrowPalette() {
+  const pal = document.getElementById('arrowPalette');
+  pal.innerHTML = '';
+  ARROW_DEFS.forEach((def, i) => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;';
+    const btn = document.createElement('button');
+    btn.className = 'arrow-btn';
+    const c = document.createElement('canvas');
+    c.width = 80; c.height = 80;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#111'; ctx.fillRect(0,0,80,80);
+    ctx.save(); ctx.translate(40,40);
+    drawArrowShape(ctx, i, 56, 'white');
+    ctx.restore();
+    btn.appendChild(c);
+    btn.onclick = () => addArrow(i);
+    const nm = document.createElement('div');
+    nm.className = 'arrow-name'; nm.textContent = def.name;
+    wrap.append(btn, nm);
+    pal.appendChild(wrap);
+  });
+}
+
+function addArrow(idx) {
+  const ov = { id:state.ovNextId++, type:'arrow', arrowIdx:idx, x:CW/2, y:CH/2, scale:1, angle:0, color:'#ffffff' };
+  state.overlays.push(ov);
+  state.selected = { kind:'overlay', id:ov.id };
+  renderOverlayList();
+  updateSelectionUI();
+  update();
+}
+
+// ───────────────────────────────────────────
+//  Overlay list
+// ───────────────────────────────────────────
+function renderOverlayList() {
+  const list = document.getElementById('ovList');
+  list.innerHTML = '';
+  state.overlays.forEach(ov => {
+    const card = document.createElement('div');
+    card.className = 'ov-card';
+    card.id = 'ov-'+ov.id;
+    if (state.selected?.kind === 'overlay' && state.selected.id === ov.id) card.classList.add('selected');
+
+    // Head
+    const head = document.createElement('div'); head.className = 'ov-head';
+    if (ov.type === 'image') {
+      const th = document.createElement('img');
+      th.src = ov.url; th.className = 'ov-thumb';
+      head.appendChild(th);
+    } else {
+      const tc = document.createElement('canvas');
+      tc.className = 'ov-thumb-canvas'; tc.width=80; tc.height=80;
+      const tctx = tc.getContext('2d');
+      tctx.fillStyle='#111'; tctx.fillRect(0,0,80,80);
+      tctx.save(); tctx.translate(40,40);
+      drawArrowShape(tctx, ov.arrowIdx, 56, ov.color);
+      tctx.restore();
+      head.appendChild(tc);
+    }
+    const nm = document.createElement('span'); nm.className='ov-name';
+    nm.textContent = ov.type==='arrow' ? `矢印 (${ARROW_DEFS[ov.arrowIdx].name})` : `画像 ${ov.id+1}`;
+    const del = document.createElement('button'); del.className='ov-del'; del.textContent='×';
+    del.onclick = () => {
+      state.overlays = state.overlays.filter(o => o.id!==ov.id);
+      if (state.selected?.id === ov.id) state.selected = null;
+      renderOverlayList(); updateSelectionUI(); update();
+    };
+    head.append(nm, del);
+    card.appendChild(head);
+
+    // Arrow color
+    if (ov.type === 'arrow') {
+      const cr = document.createElement('div'); cr.className='color-row';
+      const cl = document.createElement('label'); cl.textContent='色';
+      const ci = document.createElement('input'); ci.type='color'; ci.value=ov.color;
+      ci.oninput = () => { ov.color=ci.value; renderOverlayList(); update(false); };
+      cr.append(cl, ci); card.appendChild(cr);
+    }
+
+    // Sliders
+    const sliders = ov.type === 'arrow'
+      ? [{label:'スケール',prop:'scale',min:0.1,max:5,step:0.05,fmt:v=>(+v).toFixed(2)+'×'},{label:'角度',prop:'angle',min:-180,max:180,step:1,fmt:v=>v+'°'}]
+      : [{label:'スケール',prop:'scale',min:0.05,max:3,step:0.01,fmt:v=>(+v).toFixed(2)+'×'},{label:'角度',prop:'angle',min:-180,max:180,step:1,fmt:v=>v+'°'}];
+
+    sliders.forEach(({label,prop,min,max,step,fmt}) => {
+      const row = document.createElement('div'); row.className='srow';
+      const lbl = document.createElement('span'); lbl.className='srow-label'; lbl.textContent=label;
+      const inp = document.createElement('input'); inp.type='range';
+      inp.min=min; inp.max=max; inp.step=step; inp.value=ov[prop];
+      inp.style.cssText='flex:1;accent-color:#C9879A;cursor:pointer;';
+      const val = document.createElement('span'); val.className='srow-val'; val.textContent=fmt(ov[prop]);
+      inp.oninput = () => { ov[prop]=parseFloat(inp.value); val.textContent=fmt(inp.value); renderOverlayList(); update(false); };
+      row.append(lbl, inp, val); card.appendChild(row);
+    });
+
+    // Select on click
+    card.addEventListener('mousedown', () => {
+      state.selected = { kind:'overlay', id:ov.id };
+      updateSelectionUI(); render(cv);
+    });
+
+    list.appendChild(card);
+  });
+}
+
+// ───────────────────────────────────────────
+//  Overlay image upload
+// ───────────────────────────────────────────
+document.getElementById('ovInput').addEventListener('change', e => {
+  Array.from(e.target.files).forEach(file => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const ov = { id:state.ovNextId++, type:'image', img, url, x:CW/2, y:CH/2,
+        scale: Math.min(1, 600/Math.max(img.naturalWidth,img.naturalHeight)), angle:0 };
+      state.overlays.push(ov);
+      state.selected = { kind:'overlay', id:ov.id };
+      renderOverlayList(); updateSelectionUI(); update();
+    };
+    img.src = url;
+  });
+  e.target.value = '';
+});
+
+// ───────────────────────────────────────────
+//  BG upload
+// ───────────────────────────────────────────
+document.getElementById('bgInput').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    state.bg.img = img;
+    const th = document.getElementById('bgThumb');
+    th.src=url; th.style.display='block';
+    document.getElementById('bgClear').style.display='block';
+    update();
+  };
+  img.src = url;
+});
+function clearBg() {
+  state.bg.img=null; document.getElementById('bgInput').value='';
+  document.getElementById('bgThumb').style.display='none';
+  document.getElementById('bgClear').style.display='none';
+  update();
+}
+
+// ───────────────────────────────────────────
+//  Sliders
+// ───────────────────────────────────────────
+function updateLabel(inp) {
+  const id=inp.id; const v=parseFloat(inp.value);
+  const el = document.getElementById(id+'-v'); if (!el) return;
+  if (id.endsWith('a')) el.textContent=v.toFixed(1)+'°';
+  else if (id==='bgAlpha') el.textContent=v+'%';
+  else if (id==='bgScale') el.textContent=v+'%';
+  else el.textContent=v;
+}
+
+['h1a','h2a','pa','h3a'].forEach(id => {
+  const key = id.replace('a','').replace('p','p');
+  const textKey = id==='pa' ? 'p' : id.replace('a','');
+  document.getElementById(id)?.addEventListener('input', e => {
+    updateLabel(e.target);
+    state.elProps[textKey].angle = parseFloat(e.target.value);
+    update(false);
+  });
+});
+['h1','h2','p','h3'].forEach(id =>
+  document.getElementById(id)?.addEventListener('input', () => update())
+);
+['bgAlpha','bgScale','bgOx','bgOy'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', e => {
+    updateLabel(e.target); const v=parseFloat(e.target.value);
+    if(id==='bgAlpha')state.bg.alpha=v/100;
+    if(id==='bgScale')state.bg.scale=v/100;
+    if(id==='bgOx')state.bg.ox=v;
+    if(id==='bgOy')state.bg.oy=v;
+    update();
+  });
+});
+
+// ───────────────────────────────────────────
+//  Tabs
+// ───────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('pane-'+tab.dataset.tab)?.classList.add('active');
+  });
+});
+
+// ───────────────────────────────────────────
+//  Template select
+// ───────────────────────────────────────────
+function selectTemplate(idx) {
+  state.tplIdx = idx;
+  TEMPLATES[idx].els.forEach(el => {
+    state.elProps[el.t] = { x:el.x, y:el.y, angle:0 };
+  });
+  ['h1a','h2a','pa','h3a'].forEach(id => {
+    const el=document.getElementById(id); if(el){el.value=0; updateLabel(el);}
+  });
+  state.selected = null; updateSelectionUI();
+  update();
+}
+
+// ───────────────────────────────────────────
+//  Thumbnails
+// ───────────────────────────────────────────
+let thumbTimer;
+function buildThumbs() {
+  const list = document.getElementById('tplList'); list.innerHTML='';
+  TEMPLATES.forEach((tpl,i) => {
+    const full = Object.assign(document.createElement('canvas'),{width:CW,height:CH});
+    const fctx = full.getContext('2d');
+    fctx.fillStyle='#0a0a0a'; fctx.fillRect(0,0,CW,CH);
+    const texts=getTexts();
+    for (const el of tpl.els) {
+      const txt=texts[el.t]; if(!txt) continue;
+      if(el.t==='p') drawPara(fctx,txt,el,el.x,el.y,0);
+      else           drawLine(fctx,txt,el,el.x,el.y,0);
+    }
+    const tc=Object.assign(document.createElement('canvas'),{width:TW,height:TH});
+    tc.className='tpl-canvas'; tc.style.cssText=`width:${TW}px;height:${TH}px;`;
+    tc.getContext('2d').drawImage(full,0,0,TW,TH);
+    const item=document.createElement('div');
+    item.className='tpl-item'+(i===state.tplIdx?' active':'');
+    item.onclick=()=>selectTemplate(i);
+    const nm=document.createElement('div'); nm.className='tpl-name'; nm.textContent=tpl.name;
+    item.append(tc,nm); list.appendChild(item);
+  });
+}
+
+// ───────────────────────────────────────────
+//  Update + Download
+// ───────────────────────────────────────────
+function getTexts() {
+  return { h1:document.getElementById('h1').value, h2:document.getElementById('h2').value,
+           p:document.getElementById('p').value,   h3:document.getElementById('h3').value };
+}
+function update(schedThumb=true) {
+  render(cv);
+  if (schedThumb) { clearTimeout(thumbTimer); thumbTimer=setTimeout(buildThumbs,300); }
+}
+function downloadImage() {
+  const c=Object.assign(document.createElement('canvas'),{width:CW,height:CH});
+  const saved=state.selected; state.selected=null;
+  render(c);
+  state.selected=saved;
+  const a=document.createElement('a'); a.download='story.png'; a.href=c.toDataURL('image/png'); a.click();
+}
+
+// ───────────────────────────────────────────
+//  Init
+// ───────────────────────────────────────────
+buildArrowPalette();
+selectTemplate(0);
+document.querySelectorAll('input[type=range]').forEach(updateLabel);
+</script>
+</body>
+</html>
